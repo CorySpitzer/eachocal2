@@ -1,8 +1,9 @@
 class Api::SkillsController < ApplicationController
+  before_action :authenticate_user!
   skip_before_action :verify_authenticity_token
   
   def create
-    skill = Skill.new(skill_params)
+    skill = current_user.skills.new(skill_params)
     
     if skill.save
       # Create practice sessions for each date in the pattern
@@ -21,7 +22,7 @@ class Api::SkillsController < ApplicationController
   end
 
   def update
-    skill = Skill.find(params[:id])
+    skill = current_user.skills.find(params[:id])
     old_pattern = skill.pattern
     
     if skill.update(skill_params)
@@ -46,7 +47,7 @@ class Api::SkillsController < ApplicationController
   end
 
   def destroy
-    skill = Skill.find(params[:id])
+    skill = current_user.skills.find(params[:id])
     skill.destroy
     head :no_content
   end

@@ -1,4 +1,5 @@
 class Skill < ApplicationRecord
+  belongs_to :user
   has_many :practice_sessions, dependent: :destroy
   
   validates :name, presence: true
