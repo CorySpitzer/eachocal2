@@ -1,9 +1,61 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <div class="calendar-container">
+      <div class="calendar-container" data-controller="calendar">
         <div class="calendar-header">
-          <h2><%= @current_date.strftime('%B %Y') %></h2>
+          <div class="calendar-nav">
+            <%= link_to calendar_path(year: @prev_month.year, month: @prev_month.month),
+                        class: "nav-btn",
+                        data: { turbo_frame: "calendar" } do %>
+              <i class="bi bi-chevron-left"></i>
+            <% end %>
+            
+            <div class="date-selector">
+              <div class="select-group">
+                <a href="#" class="calendar-arrow" 
+                   data-action="click->calendar#prevMonth"
+                   aria-label="Previous Month">&lt;</a>
+                <select id="month-select" 
+                        class="form-select"
+                        data-action="change->calendar#changeMonth">
+                  <% (1..12).each do |month| %>
+                    <option value="<%= month %>" 
+                            <%= "selected" if month == @current_date.month %>>
+                      <%= Date::MONTHNAMES[month] %>
+                    </option>
+                  <% end %>
+                </select>
+                <a href="#" class="calendar-arrow"
+                   data-action="click->calendar#nextMonth"
+                   aria-label="Next Month">&gt;</a>
+              </div>
+              
+              <div class="select-group">
+                <a href="#" class="calendar-arrow"
+                   data-action="click->calendar#prevYear"
+                   aria-label="Previous Year">&lt;</a>
+                <select id="year-select" 
+                        class="form-select"
+                        data-action="change->calendar#changeYear">
+                  <% ((Time.current.year - 1)..(Time.current.year + 5)).each do |year| %>
+                    <option value="<%= year %>" 
+                            <%= "selected" if year == @current_date.year %>>
+                      <%= year %>
+                    </option>
+                  <% end %>
+                </select>
+                <a href="#" class="calendar-arrow"
+                   data-action="click->calendar#nextYear"
+                   aria-label="Next Year">&gt;</a>
+              </div>
+            </div>
+
+            <%= link_to calendar_path(year: @next_month.year, month: @next_month.month),
+                        class: "nav-btn",
+                        data: { turbo_frame: "calendar" } do %>
+              <i class="bi bi-chevron-right"></i>
+            <% end %>
+          </div>
         </div>
         
         <div class="calendar-grid">
@@ -81,11 +133,51 @@
       margin-bottom: 30px;
     }
 
-    .calendar-header h2 {
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: #333;
-      margin: 0;
+    .calendar-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      color: #495057;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: #e9ecef;
+      color: #212529;
+    }
+
+    .date-selector {
+      display: flex;
+      gap: 10px;
+    }
+
+    .date-selector select {
+      padding: 8px 12px;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      background: #fff;
+      color: #495057;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .date-selector select:focus {
+      outline: none;
+      border-color: #86b7fe;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     }
 
     .calendar-grid {
@@ -248,9 +340,49 @@
       color: #555;
     }
 
+    .select-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .calendar-arrow {
+      color: #212529;
+      text-decoration: none;
+      cursor: pointer;
+      padding: 0 4px;
+      font-size: 16px;
+    }
+
+    .calendar-arrow:hover {
+      color: #000;
+      text-decoration: none;
+    }
+
+    .form-select {
+      border-radius: 4px;
+      border: 1px solid #ced4da;
+      padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+      font-size: 0.95rem;
+      min-width: 120px;
+    }
+
     @media (max-width: 768px) {
       .calendar-container {
         padding: 15px;
+      }
+
+      .calendar-nav {
+        gap: 10px;
+      }
+
+      .date-selector {
+        gap: 5px;
+      }
+
+      .date-selector select {
+        padding: 6px 8px;
+        font-size: 0.9rem;
       }
 
       .calendar-day {
@@ -279,6 +411,12 @@
 
       .marker-type {
         font-size: 0.8rem;
+      }
+
+      .form-select {
+        min-width: 100px;
+        font-size: 0.9rem;
+        padding: 0.25rem 1.75rem 0.25rem 0.5rem;
       }
     }
   </style>

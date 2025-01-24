@@ -2,7 +2,15 @@ class CalendarController < ApplicationController
   before_action :authenticate_user!
   
   def index
-    @current_date = Time.new(2025, 1, 24, 14, 54, 10, "-05:00")
+    # Get the requested year and month from params, default to current date
+    @current_date = if params[:year].present? && params[:month].present?
+      Time.new(params[:year].to_i, params[:month].to_i, 1, 14, 1, 28, "-05:00")
+    else
+      Time.new(2025, 1, 24, 15, 1, 28, "-05:00")
+    end
+
+    @prev_month = @current_date.prev_month.beginning_of_month
+    @next_month = @current_date.next_month.beginning_of_month
     @start_date = @current_date.beginning_of_month.beginning_of_week(:sunday)
     @end_date = @current_date.end_of_month.end_of_week(:sunday)
     
