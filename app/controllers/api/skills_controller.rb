@@ -2,6 +2,18 @@ class Api::SkillsController < ApplicationController
   before_action :authenticate_user!
   skip_before_action :verify_authenticity_token
   
+  def index
+    skills = current_user.skills
+    render json: {
+      skills: skills.map { |skill|
+        {
+          skill: skill,
+          practice_sessions: skill.practice_sessions
+        }
+      }
+    }
+  end
+
   def create
     skill = current_user.skills.new(skill_params)
     

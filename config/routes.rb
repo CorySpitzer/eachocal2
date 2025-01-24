@@ -12,6 +12,6 @@ Rails.application.routes.draw do
   root "home#index"
 
   namespace :api do
-    resources :skills, only: [:create, :update, :destroy]
+    resources :skills, only: [:index, :create, :update, :destroy]
   end
 end

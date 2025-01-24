@@ -23,7 +23,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set default date to today
     document.getElementById('startDate').valueAsDate = new Date(REFERENCE_TIME);
+
+    // Load existing skills
+    loadExistingSkills();
 });
+
+async function loadExistingSkills() {
+    try {
+        const response = await fetch('/api/skills', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to load skills');
+        }
+
+        const data = await response.json();
+        data.skills.forEach(skillData => {
+            createSkillElement(skillData.skill, skillData.practice_sessions);
+        });
+    } catch (error) {
+        console.error('Error loading skills:', error);
+    }
+}
 
 async function addSkill() {
     const skillInput = document.getElementById('skillInput');
