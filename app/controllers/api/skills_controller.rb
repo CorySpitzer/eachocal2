@@ -20,6 +20,37 @@ class Api::SkillsController < ApplicationController
     end
   end
 
+  def update
+    skill = Skill.find(params[:id])
+    old_pattern = skill.pattern
+    
+    if skill.update(skill_params)
+      if old_pattern != skill.pattern
+        # Delete existing practice sessions
+        skill.practice_sessions.destroy_all
+        
+        # Create new practice sessions for the new pattern
+        dates = generate_practice_dates(skill.start_date, skill.pattern)
+        dates.each do |date|
+          skill.practice_sessions.create!(scheduled_date: date)
+        end
+      end
+      
+      render json: {
+        skill: skill,
+        practice_sessions: skill.practice_sessions
+      }, status: :ok
+    else
+      render json: { errors: skill.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    skill = Skill.find(params[:id])
+    skill.destroy
+    head :no_content
+  end
+
   private
 
   def skill_params

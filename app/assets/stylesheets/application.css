@@ -50,18 +50,43 @@ button:hover {
     background-color: #45a049;
 }
 
-.delete-btn {
-    background-color: #ff4444;
-    color: white;
+.calendar-toggle, .delete-btn, .save-btn {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+
+.calendar-toggle {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.calendar-toggle:hover {
+    background-color: #357abd;
+}
+
+.delete-btn {
+    background-color: #ff4444;
+    color: white;
 }
 
 .delete-btn:hover {
     background-color: #cc0000;
+}
+
+.save-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #45a049;
 }
 
 .skill-list {
@@ -113,11 +138,6 @@ button:hover {
 
 .pattern-select {
     min-width: 200px;
-}
-
-.calendar-toggle {
-    background-color: #4a90e2;
-    margin-left: 1rem;
 }
 
 .calendar-widget {
@@ -199,4 +219,10 @@ button:hover {
     background-color: white;
     font-size: 0.8em;
     width: 80px;
+}
+
+.pattern-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
 }

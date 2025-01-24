@@ -83,7 +83,13 @@ function createSkillElement(skill, practiceSessions) {
     skillNameSection.className = 'skill-name';
     skillNameSection.innerHTML = `<strong>${skill.name}</strong>`;
 
-    // Create pattern selector
+    // Create pattern selector and save button container
+    const patternContainer = document.createElement('div');
+    patternContainer.className = 'pattern-container';
+    patternContainer.style.display = 'flex';
+    patternContainer.style.gap = '10px';
+    patternContainer.style.alignItems = 'center';
+
     const patternSelect = document.createElement('select');
     patternSelect.className = 'pattern-select';
     Object.keys(PATTERNS).forEach(pattern => {
@@ -96,6 +102,61 @@ function createSkillElement(skill, practiceSessions) {
         patternSelect.appendChild(option);
     });
 
+    // Create save button
+    const saveButton = document.createElement('button');
+    saveButton.className = 'save-btn';
+    saveButton.innerHTML = '💾 Save';
+    saveButton.style.display = 'none'; // Initially hidden
+
+    // Show save button when pattern changes
+    patternSelect.addEventListener('change', () => {
+        saveButton.style.display = 'block';
+    });
+
+    // Handle save button click
+    saveButton.addEventListener('click', async () => {
+        try {
+            const response = await fetch(`/api/skills/${skill.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    skill: {
+                        pattern: patternSelect.value
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.errors?.join(', ') || 'Failed to update pattern');
+            }
+
+            const data = await response.json();
+            
+            // Update the schedule with new practice sessions
+            updateScheduleWithSessions(scheduleSpan, data.practice_sessions);
+            
+            // Update calendar if visible
+            if (calendarWidget.classList.contains('visible')) {
+                updateCalendar(calendarWidget, data.skill.start_date, data.skill.pattern);
+            }
+
+            // Hide save button after successful save
+            saveButton.style.display = 'none';
+            
+            // Show success message
+            alert('Pattern updated successfully!');
+        } catch (error) {
+            alert('Error updating pattern: ' + error.message);
+        }
+    });
+
+    patternContainer.appendChild(patternSelect);
+    patternContainer.appendChild(saveButton);
+
     // Create schedule display
     const scheduleSpan = document.createElement('div');
     scheduleSpan.className = 'schedule-span';
@@ -103,7 +164,7 @@ function createSkillElement(skill, practiceSessions) {
     // Create calendar toggle button
     const calendarToggle = document.createElement('button');
     calendarToggle.className = 'calendar-toggle';
-    calendarToggle.textContent = '📅';
+    calendarToggle.innerHTML = '📅 Calendar';
     
     // Create calendar widget
     const calendarWidget = document.createElement('div');
@@ -112,9 +173,26 @@ function createSkillElement(skill, practiceSessions) {
     // Create delete button
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'delete-btn';
-    deleteBtn.textContent = '✖';
-    deleteBtn.addEventListener('click', () => {
-        skillList.removeChild(skillItem);
+    deleteBtn.innerHTML = '🗑️ Delete';
+    deleteBtn.addEventListener('click', async () => {
+        if (confirm('Are you sure you want to delete this skill?')) {
+            try {
+                const response = await fetch(`/api/skills/${skill.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to delete skill');
+                }
+
+                skillList.removeChild(skillItem);
+            } catch (error) {
+                alert('Error deleting skill: ' + error.message);
+            }
+        }
     });
     
     // Toggle calendar visibility
@@ -127,7 +205,7 @@ function createSkillElement(skill, practiceSessions) {
 
     // Add elements to skill header
     skillHeader.appendChild(skillNameSection);
-    skillHeader.appendChild(patternSelect);
+    skillHeader.appendChild(patternContainer);
     skillHeader.appendChild(calendarToggle);
     skillHeader.appendChild(deleteBtn);
 
@@ -181,7 +259,7 @@ function updateScheduleWithSessions(scheduleSpan, practiceSessions) {
         for (let i = 1; i <= 5; i++) {
             const option = document.createElement('option');
             option.value = i;
-            option.textContent = '⭐'.repeat(i);
+            option.textContent = ''.repeat(i);
             if (session.rating === i) {
                 option.selected = true;
             }
@@ -234,7 +312,7 @@ function updateSchedule(scheduleSpan, startDate, patternName) {
         for (let i = 1; i <= 5; i++) {
             const option = document.createElement('option');
             option.value = i;
-            option.textContent = '⭐'.repeat(i);
+            option.textContent = ''.repeat(i);
             ratingSelect.appendChild(option);
         }
 
