@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('startDate').valueAsDate = new Date(REFERENCE_TIME);
 });
 
-function addSkill() {
+async function addSkill() {
     const skillInput = document.getElementById('skillInput');
     const startDateInput = document.getElementById('startDate');
     const skillList = document.getElementById('skillList');
@@ -35,6 +35,38 @@ function addSkill() {
         return;
     }
 
+    try {
+        const response = await fetch('/api/skills', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                skill: {
+                    name: skillInput.value,
+                    pattern: 'Classic', // Default pattern
+                    start_date: startDateInput.value
+                }
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.errors?.join(', ') || 'Failed to save skill');
+        }
+
+        const data = await response.json();
+        createSkillElement(data.skill, data.practice_sessions);
+        
+        // Clear inputs
+        skillInput.value = '';
+    } catch (error) {
+        alert('Error saving skill: ' + error.message);
+    }
+}
+
+function createSkillElement(skill, practiceSessions) {
     const skillItem = document.createElement('div');
     skillItem.className = 'skill-item';
 
@@ -49,7 +81,7 @@ function addSkill() {
     // Create skill name section
     const skillNameSection = document.createElement('div');
     skillNameSection.className = 'skill-name';
-    skillNameSection.innerHTML = `<strong>${skillInput.value}</strong>`;
+    skillNameSection.innerHTML = `<strong>${skill.name}</strong>`;
 
     // Create pattern selector
     const patternSelect = document.createElement('select');
@@ -58,6 +90,9 @@ function addSkill() {
         const option = document.createElement('option');
         option.value = pattern;
         option.textContent = pattern;
+        if (pattern === skill.pattern) {
+            option.selected = true;
+        }
         patternSelect.appendChild(option);
     });
 
@@ -86,7 +121,7 @@ function addSkill() {
     calendarToggle.addEventListener('click', () => {
         calendarWidget.classList.toggle('visible');
         if (calendarWidget.classList.contains('visible')) {
-            updateCalendar(calendarWidget, startDateInput.value, patternSelect.value);
+            updateCalendar(calendarWidget, skill.start_date, skill.pattern);
         }
     });
 
@@ -104,19 +139,68 @@ function addSkill() {
     skillItem.appendChild(skillInfo);
     skillItem.appendChild(calendarWidget);
 
+    // Update schedule with practice sessions
+    updateScheduleWithSessions(scheduleSpan, practiceSessions);
+
     // Update schedule when pattern changes
     patternSelect.addEventListener('change', () => {
-        updateSchedule(scheduleSpan, startDateInput.value, patternSelect.value);
+        updateSchedule(scheduleSpan, skill.start_date, patternSelect.value);
         if (calendarWidget.classList.contains('visible')) {
-            updateCalendar(calendarWidget, startDateInput.value, patternSelect.value);
+            updateCalendar(calendarWidget, skill.start_date, patternSelect.value);
         }
     });
 
-    // Initial schedule update
-    updateSchedule(scheduleSpan, startDateInput.value, 'Classic');
+    document.getElementById('skillList').appendChild(skillItem);
+}
 
-    skillList.appendChild(skillItem);
-    skillInput.value = '';
+function updateScheduleWithSessions(scheduleSpan, practiceSessions) {
+    // Clear previous content
+    scheduleSpan.innerHTML = '';
+
+    // Add explanatory text
+    const explanationText = document.createElement('p');
+    explanationText.textContent = "How well did you know the concept or how well could you solve the problem?";
+    explanationText.style.marginBottom = '1rem';
+    scheduleSpan.appendChild(explanationText);
+
+    practiceSessions.forEach(session => {
+        const dateItem = document.createElement('div');
+        dateItem.className = 'date-item';
+
+        // Create rating dropdown
+        const ratingSelect = document.createElement('select');
+        ratingSelect.className = 'date-rating';
+        
+        // Add default "not rated" option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '0';
+        defaultOption.textContent = '-- Rate --';
+        ratingSelect.appendChild(defaultOption);
+        
+        // Add star ratings
+        for (let i = 1; i <= 5; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = '⭐'.repeat(i);
+            if (session.rating === i) {
+                option.selected = true;
+            }
+            ratingSelect.appendChild(option);
+        }
+
+        // Create date text
+        const dateText = document.createElement('span');
+        dateText.textContent = new Date(session.scheduled_date).toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric' 
+        });
+
+        // Assemble date item
+        dateItem.appendChild(dateText);
+        dateItem.appendChild(ratingSelect);
+        scheduleSpan.appendChild(dateItem);
+    });
 }
 
 function updateSchedule(scheduleSpan, startDate, patternName) {
@@ -167,19 +251,6 @@ function updateSchedule(scheduleSpan, startDate, patternName) {
         dateItem.appendChild(ratingSelect);
         scheduleSpan.appendChild(dateItem);
     });
-}
-
-function generateDates(startDate, pattern) {
-    const dates = [];
-    let currentDate = new Date(startDate);
-    
-    for (const days of pattern) {
-        currentDate = new Date(startDate);
-        currentDate.setDate(currentDate.getDate() + days);
-        dates.push(new Date(currentDate));
-    }
-    
-    return dates;
 }
 
 function updateCalendar(calendarWidget, startDate, patternName) {
@@ -270,4 +341,17 @@ function generateMonthCalendar(date, studyDates, today) {
     
     monthContainer.appendChild(daysDiv);
     return monthContainer;
+}
+
+function generateDates(startDate, pattern) {
+    const dates = [];
+    let currentDate = new Date(startDate);
+    
+    for (const days of pattern) {
+        currentDate = new Date(startDate);
+        currentDate.setDate(currentDate.getDate() + days);
+        dates.push(new Date(currentDate));
+    }
+    
+    return dates;
 }
