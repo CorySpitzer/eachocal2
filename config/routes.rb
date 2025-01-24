@@ -14,4 +14,6 @@ Rails.application.routes.draw do
   namespace :api do
     resources :skills, only: [:index, :create, :update, :destroy]
   end
+
+  get 'calendar' => 'calendar#index', as: :calendar
 end

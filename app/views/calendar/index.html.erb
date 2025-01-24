@@ -1,0 +1,213 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="calendar-container">
+        <div class="calendar-header">
+          <h2><%= @current_date.strftime('%B %Y') %></h2>
+        </div>
+        
+        <div class="calendar-grid">
+          <% %w[Sun Mon Tue Wed Thu Fri Sat].each do |day| %>
+            <div class="calendar-day-header"><%= day %></div>
+          <% end %>
+          
+          <% date = @start_date %>
+          <% while date <= @end_date do %>
+            <div class="calendar-day <%= 'other-month' if date.month != @current_date.month %>"
+                 data-date="<%= date.to_date %>">
+              <div class="day-number"><%= date.day %></div>
+              <div class="practice-markers">
+                <% @practice_days.each do |skill| %>
+                  <% if skill[:days].include?(date.to_date) %>
+                    <div class="practice-marker <%= skill[:color] %>" 
+                         data-bs-toggle="tooltip"
+                         title="<%= skill[:name] %>"></div>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+            <% date = date.next_day %>
+          <% end %>
+        </div>
+
+        <div class="skill-legend">
+          <h3>Skills</h3>
+          <% @practice_days.each do |skill| %>
+            <div class="skill-legend-item">
+              <div class="legend-color <%= skill[:color] %>"></div>
+              <div class="legend-name"><%= skill[:name] %></div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :styles do %>
+  <style>
+    .calendar-container {
+      margin: 20px 0;
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .calendar-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .calendar-header h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      background: #ddd;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .calendar-day-header {
+      background: #f4f4f4;
+      padding: 15px 10px;
+      text-align: center;
+      font-weight: 600;
+      color: #555;
+      font-size: 0.9rem;
+    }
+
+    .calendar-day {
+      background: white;
+      min-height: 120px;
+      padding: 8px;
+      position: relative;
+    }
+
+    .calendar-day:hover {
+      background: #fafafa;
+    }
+
+    .other-month {
+      background: #f9f9f9;
+      color: #aaa;
+    }
+
+    .day-number {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .practice-markers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      padding-top: 35px;
+      padding-right: 5px;
+    }
+
+    .practice-marker {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      transition: transform 0.15s ease;
+      cursor: pointer;
+    }
+
+    .practice-marker:hover {
+      transform: scale(1.2);
+      z-index: 1;
+    }
+
+    <% @practice_days.each do |skill| %>
+      .practice-marker.<%= skill[:color] %> {
+        background-color: <%= skill[:color] %>;
+      }
+    <% end %>
+
+    .skill-legend {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #eee;
+    }
+
+    .skill-legend h3 {
+      margin-bottom: 15px;
+      color: #444;
+      font-size: 1.2rem;
+    }
+
+    .skill-legend-item {
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+      padding: 5px;
+    }
+
+    .skill-legend-item:hover {
+      background: #fff;
+      border-radius: 4px;
+    }
+
+    <% @practice_days.each do |skill| %>
+      .legend-color.<%= skill[:color] %> {
+        background-color: <%= skill[:color] %>;
+      }
+    <% end %>
+
+    .legend-name {
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    @media (max-width: 768px) {
+      .calendar-container {
+        padding: 15px;
+      }
+
+      .calendar-day {
+        min-height: 100px;
+        padding: 5px;
+      }
+
+      .calendar-day-header {
+        padding: 10px 5px;
+        font-size: 0.8rem;
+      }
+
+      .practice-markers {
+        gap: 2px;
+        padding-top: 30px;
+      }
+
+      .practice-marker {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  </style>
+<% end %>
+
+<% content_for :scripts do %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+      })
+    });
+  </script>
+<% end %>
