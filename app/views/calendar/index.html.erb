@@ -17,11 +17,18 @@
                  data-date="<%= date.to_date %>">
               <div class="day-number"><%= date.day %></div>
               <div class="practice-markers">
-                <% @practice_days.each do |skill| %>
-                  <% if skill[:days].include?(date.to_date) %>
-                    <div class="practice-marker <%= skill[:color] %>" 
+                <% @calendar_data.each do |skill| %>
+                  <% if skill[:completed_sessions].include?(date.to_date) %>
+                    <div class="practice-marker completed" 
+                         style="background-color: <%= skill[:color] %>"
                          data-bs-toggle="tooltip"
-                         title="<%= skill[:name] %>"></div>
+                         title="Completed: <%= skill[:name] %>"></div>
+                  <% end %>
+                  <% if skill[:scheduled_sessions].include?(date.to_date) %>
+                    <div class="practice-marker scheduled" 
+                         style="border-color: <%= skill[:color] %>"
+                         data-bs-toggle="tooltip"
+                         title="Scheduled: <%= skill[:name] %>"></div>
                   <% end %>
                 <% end %>
               </div>
@@ -32,9 +39,24 @@
 
         <div class="skill-legend">
           <h3>Skills</h3>
-          <% @practice_days.each do |skill| %>
+          <div class="legend-header">
+            <div class="marker-types">
+              <div class="marker-type">
+                <div class="practice-marker completed"></div>
+                <span>Completed</span>
+              </div>
+              <div class="marker-type">
+                <div class="practice-marker scheduled"></div>
+                <span>Scheduled</span>
+              </div>
+            </div>
+          </div>
+          <% @calendar_data.each do |skill| %>
             <div class="skill-legend-item">
-              <div class="legend-color <%= skill[:color] %>"></div>
+              <div class="legend-markers">
+                <div class="legend-marker completed" style="background-color: <%= skill[:color] %>"></div>
+                <div class="legend-marker scheduled" style="border-color: <%= skill[:color] %>"></div>
+              </div>
               <div class="legend-name"><%= skill[:name] %></div>
             </div>
           <% end %>
@@ -44,7 +66,7 @@
   </div>
 </div>
 
-<% content_for :styles do %>
+<% content_for :head do %>
   <style>
     .calendar-container {
       margin: 20px 0;
@@ -125,16 +147,20 @@
       cursor: pointer;
     }
 
+    .practice-marker.completed {
+      opacity: 1;
+    }
+
+    .practice-marker.scheduled {
+      opacity: 0.6;
+      border: 2px solid;
+      background-color: transparent !important;
+    }
+
     .practice-marker:hover {
       transform: scale(1.2);
       z-index: 1;
     }
-
-    <% @practice_days.each do |skill| %>
-      .practice-marker.<%= skill[:color] %> {
-        background-color: <%= skill[:color] %>;
-      }
-    <% end %>
 
     .skill-legend {
       margin-top: 30px;
@@ -150,6 +176,39 @@
       font-size: 1.2rem;
     }
 
+    .legend-header {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .marker-types {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .marker-type {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .marker-type .practice-marker {
+      width: 15px;
+      height: 15px;
+    }
+
+    .marker-type .practice-marker.completed {
+      background-color: #666;
+    }
+
+    .marker-type .practice-marker.scheduled {
+      border-color: #666;
+    }
+
     .skill-legend-item {
       display: flex;
       align-items: center;
@@ -162,11 +221,27 @@
       border-radius: 4px;
     }
 
-    <% @practice_days.each do |skill| %>
-      .legend-color.<%= skill[:color] %> {
-        background-color: <%= skill[:color] %>;
-      }
-    <% end %>
+    .legend-markers {
+      display: flex;
+      gap: 8px;
+      margin-right: 12px;
+    }
+
+    .legend-marker {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+    }
+
+    .legend-marker.completed {
+      opacity: 1;
+    }
+
+    .legend-marker.scheduled {
+      opacity: 0.6;
+      border: 2px solid;
+      background-color: transparent !important;
+    }
 
     .legend-name {
       font-size: 0.95rem;
@@ -196,6 +271,14 @@
       .practice-marker {
         width: 18px;
         height: 18px;
+      }
+
+      .marker-types {
+        gap: 15px;
+      }
+
+      .marker-type {
+        font-size: 0.8rem;
       }
     }
   </style>

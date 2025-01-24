@@ -77,6 +77,16 @@
   cursor: pointer;
 }
 
+.practice-marker.completed {
+  opacity: 1;
+}
+
+.practice-marker.scheduled {
+  opacity: 0.6;
+  border: 2px solid currentColor;
+  background-color: transparent !important;
+}
+
 .practice-marker:hover {
   transform: scale(1.2);
   z-index: 1;
@@ -96,6 +106,31 @@
   font-size: 1.2rem;
 }
 
+.legend-header {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.marker-types {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.marker-type {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.marker-type .practice-marker {
+  width: 15px;
+  height: 15px;
+}
+
 .skill-legend-item {
   display: flex;
   align-items: center;
@@ -108,11 +143,26 @@
   border-radius: 4px;
 }
 
-.legend-color {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
+.legend-markers {
+  display: flex;
+  gap: 8px;
   margin-right: 12px;
+}
+
+.legend-marker {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+
+.legend-marker.completed {
+  opacity: 1;
+}
+
+.legend-marker.scheduled {
+  opacity: 0.6;
+  border: 2px solid currentColor;
+  background-color: transparent !important;
 }
 
 .legend-name {
@@ -143,5 +193,13 @@
   .practice-marker {
     width: 18px;
     height: 18px;
+  }
+
+  .marker-types {
+    gap: 15px;
+  }
+
+  .marker-type {
+    font-size: 0.8rem;
   }
 }
