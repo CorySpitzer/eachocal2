@@ -8,9 +8,17 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <%= yield :head if content_for?(:head) %>
   </head>
 
   <body>
+    <nav class="main-nav">
+      <div class="nav-content">
+        <%= link_to "Home", root_path, class: "nav-link" %>
+      </div>
+    </nav>
+    
     <% if notice %>
       <p class="notice"><%= notice %></p>
     <% end %>
@@ -28,3 +36,30 @@
     <%= yield %>
   </body>
 </html>
+
+<% content_for :head do %>
+  <style>
+    .main-nav {
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+      padding: 0.5rem 0;
+    }
+
+    .nav-content {
+      max-width: 1450px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .nav-link {
+      color: #212529;
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+
+    .nav-link:hover {
+      color: #000;
+      text-decoration: none;
+    }
+  </style>
+<% end %>
