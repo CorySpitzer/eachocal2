@@ -269,3 +269,31 @@ button:hover {
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
+
+/* Star Rating Styles */
+.date-rating {
+    min-width: 100px;
+    padding: 4px;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.date-rating option {
+    color: #ffd700;
+    padding: 4px;
+}
+
+/* Button Icons */
+.calendar-toggle::before {
+    content: "📅";
+    margin-right: 4px;
+}
+
+.delete-btn::before {
+    content: "🗑️";
+    margin-right: 4px;
+}
+
+.save-btn::before {
+    content: "💾";
+    margin-right: 4px;
+}

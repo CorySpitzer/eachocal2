@@ -130,7 +130,7 @@ function createSkillElement(skill, practiceSessions) {
     // Create save button
     const saveButton = document.createElement('button');
     saveButton.className = 'save-btn';
-    saveButton.innerHTML = '💾 Save';
+    saveButton.innerHTML = ' Save';
     saveButton.style.display = 'none'; // Initially hidden
 
     // Show save button when pattern changes
@@ -189,7 +189,7 @@ function createSkillElement(skill, practiceSessions) {
     // Create calendar toggle button
     const calendarToggle = document.createElement('button');
     calendarToggle.className = 'calendar-toggle';
-    calendarToggle.innerHTML = '📅 Calendar';
+    calendarToggle.innerHTML = ' Calendar';
     
     // Create calendar widget
     const calendarWidget = document.createElement('div');
@@ -198,7 +198,7 @@ function createSkillElement(skill, practiceSessions) {
     // Create delete button
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'delete-btn';
-    deleteBtn.innerHTML = '🗑️ Delete';
+    deleteBtn.innerHTML = ' Delete';
     deleteBtn.addEventListener('click', async () => {
         if (confirm('Are you sure you want to delete this skill?')) {
             try {
@@ -284,7 +284,7 @@ function updateScheduleWithSessions(scheduleSpan, practiceSessions) {
         for (let i = 1; i <= 5; i++) {
             const option = document.createElement('option');
             option.value = i;
-            option.textContent = ''.repeat(i);
+            option.textContent = '★'.repeat(i);
             if (session.rating === i) {
                 option.selected = true;
             }
@@ -337,7 +337,7 @@ function updateSchedule(scheduleSpan, startDate, patternName) {
         for (let i = 1; i <= 5; i++) {
             const option = document.createElement('option');
             option.value = i;
-            option.textContent = ''.repeat(i);
+            option.textContent = '★'.repeat(i);
             ratingSelect.appendChild(option);
         }
 
