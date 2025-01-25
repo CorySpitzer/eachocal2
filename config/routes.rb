@@ -12,6 +12,10 @@ Rails.application.routes.draw do
   root "home#index"
 
   namespace :api do
+    resources :skills do
+      resources :practice_sessions, only: [:create]
+    end
+    post '/practice_sessions/:id/rate', to: 'practice_sessions#rate'
     resources :skills, only: [:index, :create, :update, :destroy]
   end
 

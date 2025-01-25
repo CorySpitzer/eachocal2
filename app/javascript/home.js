@@ -291,6 +291,41 @@ function updateScheduleWithSessions(scheduleSpan, practiceSessions) {
             ratingSelect.appendChild(option);
         }
 
+        // Create save button
+        const saveRatingBtn = document.createElement('button');
+        saveRatingBtn.className = 'save-rating-btn';
+        saveRatingBtn.textContent = 'Save';
+        saveRatingBtn.style.display = 'none';
+
+        // Show save button when rating changes
+        ratingSelect.addEventListener('change', () => {
+            saveRatingBtn.style.display = 'inline-block';
+        });
+
+        // Handle save button click
+        saveRatingBtn.addEventListener('click', async () => {
+            const rating = ratingSelect.value;
+            try {
+                const response = await fetch(`/api/practice_sessions/${session.id}/rate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ rating: parseInt(rating) })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to save rating');
+                }
+
+                saveRatingBtn.style.display = 'none';
+                showNotification('Rating saved successfully', 'success');
+            } catch (error) {
+                console.error('Error saving rating:', error);
+                showNotification('Failed to save rating', 'error');
+            }
+        });
+
         // Create date text
         const dateText = document.createElement('span');
         dateText.textContent = new Date(session.scheduled_date).toLocaleDateString('en-US', { 
@@ -302,6 +337,7 @@ function updateScheduleWithSessions(scheduleSpan, practiceSessions) {
         // Assemble date item
         dateItem.appendChild(dateText);
         dateItem.appendChild(ratingSelect);
+        dateItem.appendChild(saveRatingBtn);
         scheduleSpan.appendChild(dateItem);
     });
 }
@@ -341,6 +377,41 @@ function updateSchedule(scheduleSpan, startDate, patternName) {
             ratingSelect.appendChild(option);
         }
 
+        // Create save button
+        const saveRatingBtn = document.createElement('button');
+        saveRatingBtn.className = 'save-rating-btn';
+        saveRatingBtn.textContent = 'Save';
+        saveRatingBtn.style.display = 'none';
+
+        // Show save button when rating changes
+        ratingSelect.addEventListener('change', () => {
+            saveRatingBtn.style.display = 'inline-block';
+        });
+
+        // Handle save button click
+        saveRatingBtn.addEventListener('click', async () => {
+            const rating = ratingSelect.value;
+            try {
+                const response = await fetch(`/api/practice_sessions/${session.id}/rate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ rating: parseInt(rating) })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to save rating');
+                }
+
+                saveRatingBtn.style.display = 'none';
+                showNotification('Rating saved successfully', 'success');
+            } catch (error) {
+                console.error('Error saving rating:', error);
+                showNotification('Failed to save rating', 'error');
+            }
+        });
+
         // Create date text
         const dateText = document.createElement('span');
         dateText.textContent = date.toLocaleDateString('en-US', { 
@@ -352,6 +423,7 @@ function updateSchedule(scheduleSpan, startDate, patternName) {
         // Assemble date item
         dateItem.appendChild(dateText);
         dateItem.appendChild(ratingSelect);
+        dateItem.appendChild(saveRatingBtn);
         scheduleSpan.appendChild(dateItem);
     });
 }
