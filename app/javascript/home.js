@@ -166,7 +166,7 @@ function createSkillElement(skill, practiceSessions) {
             
             // Update calendar if visible
             if (calendarWidget.classList.contains('visible')) {
-                updateCalendar(calendarWidget, data.skill.start_date, data.skill.pattern);
+                updateCalendar(calendarWidget, data.skill.start_date, data.skill.pattern, data.practice_sessions);
             }
 
             // Hide save button after successful save
@@ -224,7 +224,7 @@ function createSkillElement(skill, practiceSessions) {
     calendarToggle.addEventListener('click', () => {
         calendarWidget.classList.toggle('visible');
         if (calendarWidget.classList.contains('visible')) {
-            updateCalendar(calendarWidget, skill.start_date, skill.pattern);
+            updateCalendar(calendarWidget, skill.start_date, skill.pattern, practiceSessions);
         }
     });
 
@@ -249,7 +249,7 @@ function createSkillElement(skill, practiceSessions) {
     patternSelect.addEventListener('change', () => {
         updateSchedule(scheduleSpan, skill.start_date, patternSelect.value);
         if (calendarWidget.classList.contains('visible')) {
-            updateCalendar(calendarWidget, skill.start_date, patternSelect.value);
+            updateCalendar(calendarWidget, skill.start_date, patternSelect.value, practiceSessions);
         }
     });
 
@@ -428,7 +428,7 @@ function updateSchedule(scheduleSpan, startDate, patternName) {
     });
 }
 
-function updateCalendar(calendarWidget, startDate, patternName) {
+function updateCalendar(calendarWidget, startDate, patternName, practiceSessions) {
     const pattern = PATTERNS[patternName];
     const studyDates = generateDates(new Date(startDate), pattern);
     const startMonth = new Date(startDate);
@@ -447,7 +447,8 @@ function updateCalendar(calendarWidget, startDate, patternName) {
         monthsContainer.appendChild(generateMonthCalendar(
             currentMonth,
             studyDates,
-            new Date(REFERENCE_TIME)
+            new Date(REFERENCE_TIME),
+            practiceSessions
         ));
         currentMonth.setMonth(currentMonth.getMonth() + 1);
     }
@@ -455,7 +456,7 @@ function updateCalendar(calendarWidget, startDate, patternName) {
     calendarWidget.appendChild(monthsContainer);
 }
 
-function generateMonthCalendar(date, studyDates, today) {
+function generateMonthCalendar(date, studyDates, today, practiceSessions) {
     const monthContainer = document.createElement('div');
     monthContainer.className = 'month';
     
@@ -496,12 +497,26 @@ function generateMonthCalendar(date, studyDates, today) {
         const currentDate = new Date(date.getFullYear(), date.getMonth(), i);
         
         // Check if it's a study day
-        if (studyDates.some(studyDate => 
+        const isStudyDay = studyDates.some(studyDate => 
             studyDate.getDate() === currentDate.getDate() &&
             studyDate.getMonth() === currentDate.getMonth() &&
             studyDate.getFullYear() === currentDate.getFullYear()
-        )) {
-            dayDiv.classList.add('study-day');
+        );
+
+        if (isStudyDay) {
+            // Find matching practice session
+            const session = practiceSessions?.find(s => {
+                const sessionDate = new Date(s.scheduled_date);
+                return sessionDate.getDate() === currentDate.getDate() &&
+                       sessionDate.getMonth() === currentDate.getMonth() &&
+                       sessionDate.getFullYear() === currentDate.getFullYear();
+            });
+
+            if (session?.rating) {
+                dayDiv.classList.add(`rated-${session.rating}`);
+            } else {
+                dayDiv.classList.add('study-day');
+            }
         }
         
         // Check if it's today

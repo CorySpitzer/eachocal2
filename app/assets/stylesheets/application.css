@@ -197,6 +197,33 @@ button:hover {
 }
 
 .day.study-day {
+    background-color: white;
+    color: #333;
+    border: 3px solid #4CAF50;
+}
+
+/* Rating colors */
+.day.rated-1 {
+    background-color: #ff4444;
+    color: white;
+}
+
+.day.rated-2 {
+    background-color: #ff8c44;
+    color: white;
+}
+
+.day.rated-3 {
+    background-color: #ffcd44;
+    color: #333;
+}
+
+.day.rated-4 {
+    background-color: #88c944;
+    color: white;
+}
+
+.day.rated-5 {
     background-color: #4CAF50;
     color: white;
 }
