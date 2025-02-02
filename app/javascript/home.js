@@ -194,15 +194,12 @@ function createSkillElement(skill, practiceSessions) {
     const scheduleSpan = document.createElement('div');
     scheduleSpan.className = 'schedule-span';
     
-    // Create calendar toggle button
-    const calendarToggle = document.createElement('button');
-    calendarToggle.className = 'calendar-toggle';
-    calendarToggle.innerHTML = ' Calendar';
-    
     // Create calendar widget
     const calendarWidget = document.createElement('div');
-    calendarWidget.className = 'calendar-widget';
-    
+    calendarWidget.className = 'calendar-widget visible'; // Make it visible by default
+    calendarWidget.style.display = 'block'; // Show it immediately
+    updateCalendar(calendarWidget, skill.start_date, skill.pattern, practiceSessions);
+
     // Create delete button
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'delete-btn';
@@ -228,27 +225,29 @@ function createSkillElement(skill, practiceSessions) {
         }
     });
     
-    // Toggle calendar visibility
+    // Add event listeners
+    const calendarToggle = document.createElement('button');
+    calendarToggle.className = 'calendar-toggle';
+    calendarToggle.innerHTML = ' Calendar';
+    calendarToggle.style.display = 'none'; // Hide the toggle button since calendar is always shown
     calendarToggle.addEventListener('click', () => {
-        calendarWidget.classList.toggle('visible');
-        if (calendarWidget.classList.contains('visible')) {
-            updateCalendar(calendarWidget, skill.start_date, skill.pattern, practiceSessions);
-        }
+        // Do nothing - calendar is always shown
     });
 
-    // Add elements to skill header
+    // Append elements
     skillHeader.appendChild(skillNameSection);
     skillHeader.appendChild(patternContainer);
-    skillHeader.appendChild(calendarToggle);
-    skillHeader.appendChild(deleteBtn);
-
-    // Add elements to skill info
     skillInfo.appendChild(skillHeader);
     skillInfo.appendChild(scheduleSpan);
+    skillInfo.appendChild(calendarWidget);
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+    buttonContainer.appendChild(deleteBtn);
+    skillInfo.appendChild(buttonContainer);
 
     // Add elements to skill item
     skillItem.appendChild(skillInfo);
-    skillItem.appendChild(calendarWidget);
 
     // Update schedule with practice sessions
     updateScheduleWithSessions(scheduleSpan, practiceSessions);
