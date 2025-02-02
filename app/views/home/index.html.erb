@@ -11,17 +11,44 @@
         <h2>A Skill Schedule Manager</h2>
         <p class="description">Utilize expanding spaced repetition to maintain skill mastery while using less time and effort over time.</p>
         <div class="mb-4">
-          <%= link_to "View Calendar", calendar_path, class: "btn btn-primary" %>
+          <%= link_to "View All Skill Calendar", calendar_path, class: "btn btn-primary" %>
         </div>
         <div class="input-section">
-            <input type="text" id="skillInput" placeholder="Add skill">
-            <input type="date" id="startDate">
-            <button id="generateBtn">Generate</button>
+          <div class="form-group mb-3">
+            <select id="subjectSelect" class="form-select">
+              <option value="">Select a Subject (optional)</option>
+              <%= current_user.subjects.map { |subject| content_tag(:option, subject.name, value: subject.id) }.join.html_safe %>
+            </select>
+            <div class="mt-2">
+              <%= link_to "Create New Subject", new_subject_path, class: "btn btn-sm btn-outline-primary" %>
+            </div>
+          </div>
+          <div class="form-group mb-3">
+            <input type="text" id="skillInput" class="form-control" placeholder="Add skill">
+          </div>
+          <div class="form-group mb-3">
+            <input type="date" id="startDate" class="form-control">
+          </div>
+          <button id="generateBtn" class="btn btn-primary">Generate</button>
         </div>
-        <div id="skillList" class="skill-list">
+        <div id="skillList" class="skill-list mt-4">
             <!-- Skills will be added here dynamically -->
         </div>
-    </div>
+      </div>
     </div>
   </div>
 </div>
+
+<% content_for :head do %>
+  <style>
+    .input-section {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    .skill-list {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  </style>
+<% end %>

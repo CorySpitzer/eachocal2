@@ -24,6 +24,9 @@ class Api::SkillsController < ApplicationController
         skill.practice_sessions.create!(scheduled_date: date)
       end
       
+      # Associate with subjects if subject_ids are provided
+      skill.subject_ids = params[:skill][:subject_ids] if params[:skill][:subject_ids]
+      
       render json: {
         skill: skill,
         practice_sessions: skill.practice_sessions
@@ -67,7 +70,7 @@ class Api::SkillsController < ApplicationController
   private
 
   def skill_params
-    params.require(:skill).permit(:name, :pattern, :start_date)
+    params.require(:skill).permit(:name, :pattern, :start_date, subject_ids: [])
   end
 
   def generate_practice_dates(start_date, pattern_name)

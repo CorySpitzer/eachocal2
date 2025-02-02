@@ -53,11 +53,23 @@ async function loadExistingSkills() {
 async function addSkill() {
     const skillInput = document.getElementById('skillInput');
     const startDateInput = document.getElementById('startDate');
+    const subjectSelect = document.getElementById('subjectSelect');
     const skillList = document.getElementById('skillList');
 
     if (!skillInput.value || !startDateInput.value) {
         alert('Please enter both skill name and start date');
         return;
+    }
+
+    const skillData = {
+        name: skillInput.value,
+        pattern: 'Classic', // Default pattern
+        start_date: startDateInput.value
+    };
+
+    // Add subject_ids if a subject is selected
+    if (subjectSelect.value) {
+        skillData.subject_ids = [parseInt(subjectSelect.value)];
     }
 
     try {
@@ -68,11 +80,7 @@ async function addSkill() {
                 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
             },
             body: JSON.stringify({
-                skill: {
-                    name: skillInput.value,
-                    pattern: 'Classic', // Default pattern
-                    start_date: startDateInput.value
-                }
+                skill: skillData
             })
         });
 
@@ -86,6 +94,7 @@ async function addSkill() {
         
         // Clear inputs
         skillInput.value = '';
+        subjectSelect.value = ''; // Reset subject selection
     } catch (error) {
         alert('Error saving skill: ' + error.message);
     }
