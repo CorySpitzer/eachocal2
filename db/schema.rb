@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_24_162829) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_02_155635) do
   create_table "practice_sessions", force: :cascade do |t|
     t.integer "skill_id", null: false
     t.date "scheduled_date"
@@ -30,6 +30,24 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_24_162829) do
     t.index ["user_id"], name: "index_skills_on_user_id"
   end
 
+  create_table "skills_subjects", force: :cascade do |t|
+    t.integer "skill_id", null: false
+    t.integer "subject_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["skill_id"], name: "index_skills_subjects_on_skill_id"
+    t.index ["subject_id"], name: "index_skills_subjects_on_subject_id"
+  end
+
+  create_table "subjects", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "name"], name: "index_subjects_on_user_id_and_name", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -44,4 +62,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_24_162829) do
 
   add_foreign_key "practice_sessions", "skills"
   add_foreign_key "skills", "users"
+  add_foreign_key "skills_subjects", "skills"
+  add_foreign_key "skills_subjects", "subjects"
+  add_foreign_key "subjects", "users"
 end
