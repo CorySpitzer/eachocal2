@@ -181,8 +181,7 @@ function createSkillElement(skill, practiceSessions) {
             // Hide save button after successful save
             saveButton.style.display = 'none';
             
-            // Show success message
-            alert('Pattern updated successfully!');
+            console.log('Pattern updated successfully!');
         } catch (error) {
             alert('Error updating pattern: ' + error.message);
         }
@@ -314,7 +313,9 @@ function updateScheduleWithSessions(scheduleSpan, practiceSessions) {
         // Handle save button click
         saveRatingBtn.addEventListener('click', async () => {
             const rating = ratingSelect.value;
+            console.log('Save rating clicked:', rating);
             try {
+                console.log('Sending rating request...');
                 const response = await fetch(`/api/practice_sessions/${session.id}/rate`, {
                     method: 'POST',
                     headers: {
@@ -327,11 +328,14 @@ function updateScheduleWithSessions(scheduleSpan, practiceSessions) {
                     throw new Error('Failed to save rating');
                 }
 
+                console.log('Rating saved successfully');
                 saveRatingBtn.style.display = 'none';
-                showNotification('Rating saved successfully', 'success');
+                
+                // Always reload the page to refresh the calendar
+                console.log('Reloading page...');
+                window.location.reload();
             } catch (error) {
                 console.error('Error saving rating:', error);
-                showNotification('Failed to save rating', 'error');
             }
         });
 
@@ -400,7 +404,9 @@ function updateSchedule(scheduleSpan, startDate, patternName) {
         // Handle save button click
         saveRatingBtn.addEventListener('click', async () => {
             const rating = ratingSelect.value;
+            console.log('Save rating clicked:', rating);
             try {
+                console.log('Sending rating request...');
                 const response = await fetch(`/api/practice_sessions/${session.id}/rate`, {
                     method: 'POST',
                     headers: {
@@ -413,11 +419,10 @@ function updateSchedule(scheduleSpan, startDate, patternName) {
                     throw new Error('Failed to save rating');
                 }
 
+                console.log('Rating saved successfully');
                 saveRatingBtn.style.display = 'none';
-                showNotification('Rating saved successfully', 'success');
             } catch (error) {
                 console.error('Error saving rating:', error);
-                showNotification('Failed to save rating', 'error');
             }
         });
 
