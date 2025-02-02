@@ -16,6 +16,9 @@
     <nav class="main-nav">
       <div class="nav-content">
         <%= link_to "Home", root_path, class: "nav-link" %>
+        <% if user_signed_in? %>
+          <%= link_to "Subjects", subjects_path, class: "nav-link" %>
+        <% end %>
       </div>
     </nav>
     

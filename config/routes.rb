@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#index"
 
+  resources :subjects
+
   namespace :api do
     resources :skills do
       resources :practice_sessions, only: [:create]

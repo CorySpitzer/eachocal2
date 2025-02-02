@@ -1,0 +1,39 @@
+<%= form_with(model: subject, local: true, class: 'needs-validation') do |f| %>
+  <% if subject.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(subject.errors.count, "error") %> prohibited this subject from being saved:</h4>
+      <ul>
+        <% subject.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :name, class: 'form-label' %>
+    <%= f.text_field :name, class: 'form-control', required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :description, class: 'form-label' %>
+    <%= f.text_area :description, class: 'form-control', rows: 3 %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :skill_ids, 'Skills', class: 'form-label' %>
+    <div class="skill-selection">
+      <%= f.collection_check_boxes :skill_ids, current_user.skills, :id, :name do |b| %>
+        <div class="form-check">
+          <%= b.check_box(class: 'form-check-input') %>
+          <%= b.label(class: 'form-check-label') %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit class: 'btn btn-primary' %>
+    <%= link_to 'Back', subjects_path, class: 'btn btn-outline-secondary ms-2' %>
+  </div>
+<% end %>
