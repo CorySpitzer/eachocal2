@@ -79,11 +79,12 @@
 
 .practice-marker.completed {
   opacity: 1;
+  background-color: var(--skill-color);
 }
 
 .practice-marker.scheduled {
   opacity: 0.6;
-  border: 2px solid currentColor;
+  border: 2px solid var(--skill-color);
   background-color: transparent !important;
 }
 
@@ -157,11 +158,12 @@
 
 .legend-marker.completed {
   opacity: 1;
+  background-color: var(--skill-color);
 }
 
 .legend-marker.scheduled {
   opacity: 0.6;
-  border: 2px solid currentColor;
+  border: 2px solid var(--skill-color);
   background-color: transparent !important;
 }
 

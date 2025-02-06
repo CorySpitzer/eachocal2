@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <div class="calendar-container" data-controller="calendar">
+      <div class="calendar-container" data-controller="calendar skill-colors">
         <div class="calendar-header">
           <div class="calendar-nav">
             <%= link_to calendar_path(year: @prev_month.year, month: @prev_month.month),
@@ -72,13 +72,13 @@
                 <% @calendar_data.each do |skill| %>
                   <% if skill[:completed_sessions].include?(date.to_date) %>
                     <div class="practice-marker completed" 
-                         style="background-color: <%= skill[:color] %>"
+                         data-color="<%= skill[:color] %>"
                          data-bs-toggle="tooltip"
                          title="Completed: <%= skill[:name] %>"></div>
                   <% end %>
                   <% if skill[:scheduled_sessions].include?(date.to_date) %>
                     <div class="practice-marker scheduled" 
-                         style="border-color: <%= skill[:color] %>"
+                         data-color="<%= skill[:color] %>"
                          data-bs-toggle="tooltip"
                          title="Scheduled: <%= skill[:name] %>"></div>
                   <% end %>
@@ -106,8 +106,8 @@
           <% @calendar_data.each do |skill| %>
             <div class="skill-legend-item">
               <div class="legend-markers">
-                <div class="legend-marker completed" style="background-color: <%= skill[:color] %>"></div>
-                <div class="legend-marker scheduled" style="border-color: <%= skill[:color] %>"></div>
+                <div class="legend-marker completed" data-color="<%= skill[:color] %>"></div>
+                <div class="legend-marker scheduled" data-color="<%= skill[:color] %>"></div>
               </div>
               <div class="legend-name"><%= skill[:name] %></div>
             </div>
@@ -162,7 +162,7 @@
         </div>
       </div>
 
-      <div class="calendar-container" data-controller="calendar">
+      <div class="calendar-container" data-controller="calendar skill-colors">
         <div class="calendar-header">
           <div class="calendar-nav">
             <%= link_to calendar_path(year: @prev_month.year, month: @prev_month.month),
@@ -233,13 +233,13 @@
                 <% @calendar_data.each do |skill| %>
                   <% if skill[:completed_sessions].include?(date.to_date) %>
                     <div class="practice-marker completed" 
-                         style="background-color: <%= skill[:color] %>"
+                         data-color="<%= skill[:color] %>"
                          data-bs-toggle="tooltip"
                          title="Completed: <%= skill[:name] %>"></div>
                   <% end %>
                   <% if skill[:scheduled_sessions].include?(date.to_date) %>
                     <div class="practice-marker scheduled" 
-                         style="border-color: <%= skill[:color] %>"
+                         data-color="<%= skill[:color] %>"
                          data-bs-toggle="tooltip"
                          title="Scheduled: <%= skill[:name] %>"></div>
                   <% end %>
@@ -267,8 +267,8 @@
           <% @calendar_data.each do |skill| %>
             <div class="skill-legend-item">
               <div class="legend-markers">
-                <div class="legend-marker completed" style="background-color: <%= skill[:color] %>"></div>
-                <div class="legend-marker scheduled" style="border-color: <%= skill[:color] %>"></div>
+                <div class="legend-marker completed" data-color="<%= skill[:color] %>"></div>
+                <div class="legend-marker scheduled" data-color="<%= skill[:color] %>"></div>
               </div>
               <div class="legend-name"><%= skill[:name] %></div>
             </div>
@@ -323,7 +323,7 @@
         </div>
       </div>
 
-      <div class="calendar-container" data-controller="calendar">
+      <div class="calendar-container" data-controller="calendar skill-colors">
         <div class="calendar-header">
           <div class="calendar-nav">
             <%= link_to calendar_path(year: @prev_month.year, month: @prev_month.month),
@@ -394,13 +394,13 @@
                 <% @calendar_data.each do |skill| %>
                   <% if skill[:completed_sessions].include?(date.to_date) %>
                     <div class="practice-marker completed" 
-                         style="background-color: <%= skill[:color] %>"
+                         data-color="<%= skill[:color] %>"
                          data-bs-toggle="tooltip"
                          title="Completed: <%= skill[:name] %>"></div>
                   <% end %>
                   <% if skill[:scheduled_sessions].include?(date.to_date) %>
                     <div class="practice-marker scheduled" 
-                         style="border-color: <%= skill[:color] %>"
+                         data-color="<%= skill[:color] %>"
                          data-bs-toggle="tooltip"
                          title="Scheduled: <%= skill[:name] %>"></div>
                   <% end %>
@@ -428,8 +428,8 @@
           <% @calendar_data.each do |skill| %>
             <div class="skill-legend-item">
               <div class="legend-markers">
-                <div class="legend-marker completed" style="background-color: <%= skill[:color] %>"></div>
-                <div class="legend-marker scheduled" style="border-color: <%= skill[:color] %>"></div>
+                <div class="legend-marker completed" data-color="<%= skill[:color] %>"></div>
+                <div class="legend-marker scheduled" data-color="<%= skill[:color] %>"></div>
               </div>
               <div class="legend-name"><%= skill[:name] %></div>
             </div>
