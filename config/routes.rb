@@ -11,7 +11,11 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#index"
 
-  resources :subjects
+  resources :subjects do
+    resources :skills do
+      resources :practice_sessions, only: [:create]
+    end
+  end
 
   namespace :api do
     resources :skills do
@@ -21,5 +25,5 @@ Rails.application.routes.draw do
     resources :skills, only: [:index, :create, :update, :destroy]
   end
 
-  get 'calendar' => 'calendar#index', as: :calendar
+  get '/calendar', to: 'calendar#index'
 end

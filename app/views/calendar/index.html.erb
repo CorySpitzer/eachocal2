@@ -118,317 +118,333 @@
   </div>
 </div>
 
-<% content_for :head do %>
-  <style>
-    .calendar-container {
-      margin: 20px 0;
-      padding: 30px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="skills-selector mb-4" data-controller="subject-skills">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label for="subject_id" class="form-label">Subject</label>
+            <%= select_tag :subject_id, 
+                options_from_collection_for_select(
+                  @subjects || [], 
+                  :id, 
+                  :name, 
+                  @selected_subject&.id
+                ),
+                { 
+                  prompt: "Select a subject",
+                  class: "form-select",
+                  data: { 
+                    subject_skills_target: "subjectSelect",
+                    action: "change->subject-skills#updateSkillsDropdown",
+                    skills: (@subjects || []).map { |s| { id: s.id, name: s.name, skills: s.skills.map { |skill| { id: skill.id, name: skill.name } } }.to_json }
+                  }
+                } %>
+          </div>
+          
+          <div class="col-md-4">
+            <label for="skill_id" class="form-label">Skill</label>
+            <%= select_tag :skill_id,
+                options_for_select([["Select a skill", ""]]),
+                class: "form-select",
+                data: { subject_skills_target: "skillSelect" } %>
+          </div>
+          
+          <div class="col-md-4 d-flex align-items-end">
+            <% if @selected_subject %>
+              <%= link_to "Add New Skill", 
+                  new_subject_skill_path(@selected_subject),
+                  class: "btn btn-outline-primary",
+                  data: { subject_skills_target: "newSkillLink" } %>
+            <% end %>
+          </div>
+        </div>
+      </div>
 
-    .calendar-header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
+      <div class="calendar-container" data-controller="calendar">
+        <div class="calendar-header">
+          <div class="calendar-nav">
+            <%= link_to calendar_path(year: @prev_month.year, month: @prev_month.month),
+                        class: "nav-btn",
+                        data: { turbo_frame: "calendar" } do %>
+              <i class="bi bi-chevron-left"></i>
+            <% end %>
+            
+            <div class="date-selector">
+              <div class="select-group">
+                <a href="#" class="calendar-arrow" 
+                   data-action="click->calendar#prevMonth"
+                   aria-label="Previous Month">&lt;</a>
+                <select id="month-select" 
+                        class="form-select"
+                        data-action="change->calendar#changeMonth">
+                  <% (1..12).each do |month| %>
+                    <option value="<%= month %>" 
+                            <%= "selected" if month == @current_date.month %>>
+                      <%= Date::MONTHNAMES[month] %>
+                    </option>
+                  <% end %>
+                </select>
+                <a href="#" class="calendar-arrow"
+                   data-action="click->calendar#nextMonth"
+                   aria-label="Next Month">&gt;</a>
+              </div>
+              
+              <div class="select-group">
+                <a href="#" class="calendar-arrow"
+                   data-action="click->calendar#prevYear"
+                   aria-label="Previous Year">&lt;</a>
+                <select id="year-select" 
+                        class="form-select"
+                        data-action="change->calendar#changeYear">
+                  <% ((Time.current.year - 1)..(Time.current.year + 5)).each do |year| %>
+                    <option value="<%= year %>" 
+                            <%= "selected" if year == @current_date.year %>>
+                      <%= year %>
+                    </option>
+                  <% end %>
+                </select>
+                <a href="#" class="calendar-arrow"
+                   data-action="click->calendar#nextYear"
+                   aria-label="Next Year">&gt;</a>
+              </div>
+            </div>
 
-    .calendar-nav {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-    }
+            <%= link_to calendar_path(year: @next_month.year, month: @next_month.month),
+                        class: "nav-btn",
+                        data: { turbo_frame: "calendar" } do %>
+              <i class="bi bi-chevron-right"></i>
+            <% end %>
+          </div>
+        </div>
+        
+        <div class="calendar-grid">
+          <% %w[Sun Mon Tue Wed Thu Fri Sat].each do |day| %>
+            <div class="calendar-day-header"><%= day %></div>
+          <% end %>
+          
+          <% date = @start_date %>
+          <% while date <= @end_date do %>
+            <div class="calendar-day <%= 'other-month' if date.month != @current_date.month %>"
+                 data-date="<%= date.to_date %>">
+              <div class="day-number"><%= date.day %></div>
+              <div class="practice-markers">
+                <% @calendar_data.each do |skill| %>
+                  <% if skill[:completed_sessions].include?(date.to_date) %>
+                    <div class="practice-marker completed" 
+                         style="background-color: <%= skill[:color] %>"
+                         data-bs-toggle="tooltip"
+                         title="Completed: <%= skill[:name] %>"></div>
+                  <% end %>
+                  <% if skill[:scheduled_sessions].include?(date.to_date) %>
+                    <div class="practice-marker scheduled" 
+                         style="border-color: <%= skill[:color] %>"
+                         data-bs-toggle="tooltip"
+                         title="Scheduled: <%= skill[:name] %>"></div>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+            <% date = date.next_day %>
+          <% end %>
+        </div>
 
-    .nav-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #f8f9fa;
-      border: 1px solid #dee2e6;
-      color: #495057;
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
+        <div class="skill-legend">
+          <h3>Skills</h3>
+          <div class="legend-header">
+            <div class="marker-types">
+              <div class="marker-type">
+                <div class="practice-marker completed"></div>
+                <span>Completed</span>
+              </div>
+              <div class="marker-type">
+                <div class="practice-marker scheduled"></div>
+                <span>Scheduled</span>
+              </div>
+            </div>
+          </div>
+          <% @calendar_data.each do |skill| %>
+            <div class="skill-legend-item">
+              <div class="legend-markers">
+                <div class="legend-marker completed" style="background-color: <%= skill[:color] %>"></div>
+                <div class="legend-marker scheduled" style="border-color: <%= skill[:color] %>"></div>
+              </div>
+              <div class="legend-name"><%= skill[:name] %></div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-    .nav-btn:hover {
-      background: #e9ecef;
-      color: #212529;
-    }
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="skills-selector mb-4" data-controller="subject-skills">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label for="subject_id" class="form-label">Subject</label>
+            <%= select_tag :subject_id, 
+                options_from_collection_for_select(
+                  @subjects || [], 
+                  :id, 
+                  :name, 
+                  @selected_subject&.id
+                ),
+                { 
+                  prompt: "Select a subject",
+                  class: "form-select",
+                  data: { 
+                    subject_skills_target: "subjectSelect",
+                    action: "change->subject-skills#updateSkillsDropdown",
+                    skills: (@subjects || []).map { |s| { id: s.id, name: s.name, skills: s.skills.map { |skill| { id: skill.id, name: skill.name } } }.to_json }
+                  }
+                } %>
+          </div>
+          
+          <div class="col-md-4">
+            <label for="skill_id" class="form-label">Skill</label>
+            <%= select_tag :skill_id,
+                options_for_select([["Select a skill", ""]]),
+                class: "form-select",
+                data: { subject_skills_target: "skillSelect" } %>
+          </div>
+          
+          <div class="col-md-4 d-flex align-items-end">
+            <% if @selected_subject %>
+              <%= link_to "Add New Skill", 
+                  new_subject_skill_path(@selected_subject),
+                  class: "btn btn-outline-primary",
+                  data: { subject_skills_target: "newSkillLink" } %>
+            <% end %>
+          </div>
+        </div>
+      </div>
 
-    .date-selector {
-      display: flex;
-      gap: 10px;
-    }
+      <div class="calendar-container" data-controller="calendar">
+        <div class="calendar-header">
+          <div class="calendar-nav">
+            <%= link_to calendar_path(year: @prev_month.year, month: @prev_month.month),
+                        class: "nav-btn",
+                        data: { turbo_frame: "calendar" } do %>
+              <i class="bi bi-chevron-left"></i>
+            <% end %>
+            
+            <div class="date-selector">
+              <div class="select-group">
+                <a href="#" class="calendar-arrow" 
+                   data-action="click->calendar#prevMonth"
+                   aria-label="Previous Month">&lt;</a>
+                <select id="month-select" 
+                        class="form-select"
+                        data-action="change->calendar#changeMonth">
+                  <% (1..12).each do |month| %>
+                    <option value="<%= month %>" 
+                            <%= "selected" if month == @current_date.month %>>
+                      <%= Date::MONTHNAMES[month] %>
+                    </option>
+                  <% end %>
+                </select>
+                <a href="#" class="calendar-arrow"
+                   data-action="click->calendar#nextMonth"
+                   aria-label="Next Month">&gt;</a>
+              </div>
+              
+              <div class="select-group">
+                <a href="#" class="calendar-arrow"
+                   data-action="click->calendar#prevYear"
+                   aria-label="Previous Year">&lt;</a>
+                <select id="year-select" 
+                        class="form-select"
+                        data-action="change->calendar#changeYear">
+                  <% ((Time.current.year - 1)..(Time.current.year + 5)).each do |year| %>
+                    <option value="<%= year %>" 
+                            <%= "selected" if year == @current_date.year %>>
+                      <%= year %>
+                    </option>
+                  <% end %>
+                </select>
+                <a href="#" class="calendar-arrow"
+                   data-action="click->calendar#nextYear"
+                   aria-label="Next Year">&gt;</a>
+              </div>
+            </div>
 
-    .date-selector select {
-      padding: 8px 12px;
-      border: 1px solid #dee2e6;
-      border-radius: 6px;
-      background: #fff;
-      color: #495057;
-      font-size: 1rem;
-      cursor: pointer;
-    }
+            <%= link_to calendar_path(year: @next_month.year, month: @next_month.month),
+                        class: "nav-btn",
+                        data: { turbo_frame: "calendar" } do %>
+              <i class="bi bi-chevron-right"></i>
+            <% end %>
+          </div>
+        </div>
+        
+        <div class="calendar-grid">
+          <% %w[Sun Mon Tue Wed Thu Fri Sat].each do |day| %>
+            <div class="calendar-day-header"><%= day %></div>
+          <% end %>
+          
+          <% date = @start_date %>
+          <% while date <= @end_date do %>
+            <div class="calendar-day <%= 'other-month' if date.month != @current_date.month %>"
+                 data-date="<%= date.to_date %>">
+              <div class="day-number"><%= date.day %></div>
+              <div class="practice-markers">
+                <% @calendar_data.each do |skill| %>
+                  <% if skill[:completed_sessions].include?(date.to_date) %>
+                    <div class="practice-marker completed" 
+                         style="background-color: <%= skill[:color] %>"
+                         data-bs-toggle="tooltip"
+                         title="Completed: <%= skill[:name] %>"></div>
+                  <% end %>
+                  <% if skill[:scheduled_sessions].include?(date.to_date) %>
+                    <div class="practice-marker scheduled" 
+                         style="border-color: <%= skill[:color] %>"
+                         data-bs-toggle="tooltip"
+                         title="Scheduled: <%= skill[:name] %>"></div>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+            <% date = date.next_day %>
+          <% end %>
+        </div>
 
-    .date-selector select:focus {
-      outline: none;
-      border-color: #86b7fe;
-      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    }
-
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 2px;
-      background: #ddd;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .calendar-day-header {
-      background: #f4f4f4;
-      padding: 15px 10px;
-      text-align: center;
-      font-weight: 600;
-      color: #555;
-      font-size: 0.9rem;
-    }
-
-    .calendar-day {
-      background: white;
-      min-height: 120px;
-      padding: 8px;
-      position: relative;
-    }
-
-    .calendar-day:hover {
-      background: #fafafa;
-    }
-
-    .other-month {
-      background: #f9f9f9;
-      color: #aaa;
-    }
-
-    .day-number {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-
-    .practice-markers {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 3px;
-      padding-top: 35px;
-      padding-right: 5px;
-    }
-
-    .practice-marker {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      transition: transform 0.15s ease;
-      cursor: pointer;
-    }
-
-    .practice-marker.completed {
-      opacity: 1;
-    }
-
-    .practice-marker.scheduled {
-      opacity: 0.6;
-      border: 2px solid;
-      background-color: transparent !important;
-    }
-
-    .practice-marker:hover {
-      transform: scale(1.2);
-      z-index: 1;
-    }
-
-    .skill-legend {
-      margin-top: 30px;
-      padding: 20px;
-      background: #f8f9fa;
-      border-radius: 8px;
-      border: 1px solid #eee;
-    }
-
-    .skill-legend h3 {
-      margin-bottom: 15px;
-      color: #444;
-      font-size: 1.2rem;
-    }
-
-    .legend-header {
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
-    }
-
-    .marker-types {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-    }
-
-    .marker-type {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      color: #666;
-      font-size: 0.9rem;
-    }
-
-    .marker-type .practice-marker {
-      width: 15px;
-      height: 15px;
-    }
-
-    .marker-type .practice-marker.completed {
-      background-color: #666;
-    }
-
-    .marker-type .practice-marker.scheduled {
-      border-color: #666;
-    }
-
-    .skill-legend-item {
-      display: flex;
-      align-items: center;
-      margin: 8px 0;
-      padding: 5px;
-    }
-
-    .skill-legend-item:hover {
-      background: #fff;
-      border-radius: 4px;
-    }
-
-    .legend-markers {
-      display: flex;
-      gap: 8px;
-      margin-right: 12px;
-    }
-
-    .legend-marker {
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-    }
-
-    .legend-marker.completed {
-      opacity: 1;
-    }
-
-    .legend-marker.scheduled {
-      opacity: 0.6;
-      border: 2px solid;
-      background-color: transparent !important;
-    }
-
-    .legend-name {
-      font-size: 0.95rem;
-      color: #555;
-    }
-
-    .select-group {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .calendar-arrow {
-      color: #212529;
-      text-decoration: none;
-      cursor: pointer;
-      padding: 0 4px;
-      font-size: 16px;
-    }
-
-    .calendar-arrow:hover {
-      color: #000;
-      text-decoration: none;
-    }
-
-    .form-select {
-      border-radius: 4px;
-      border: 1px solid #ced4da;
-      padding: 0.375rem 2.25rem 0.375rem 0.75rem;
-      font-size: 0.95rem;
-      min-width: 120px;
-    }
-
-    @media (max-width: 768px) {
-      .calendar-container {
-        padding: 15px;
-      }
-
-      .calendar-nav {
-        gap: 10px;
-      }
-
-      .date-selector {
-        gap: 5px;
-      }
-
-      .date-selector select {
-        padding: 6px 8px;
-        font-size: 0.9rem;
-      }
-
-      .calendar-day {
-        min-height: 100px;
-        padding: 5px;
-      }
-
-      .calendar-day-header {
-        padding: 10px 5px;
-        font-size: 0.8rem;
-      }
-
-      .practice-markers {
-        gap: 2px;
-        padding-top: 30px;
-      }
-
-      .practice-marker {
-        width: 18px;
-        height: 18px;
-      }
-
-      .marker-types {
-        gap: 15px;
-      }
-
-      .marker-type {
-        font-size: 0.8rem;
-      }
-
-      .form-select {
-        min-width: 100px;
-        font-size: 0.9rem;
-        padding: 0.25rem 1.75rem 0.25rem 0.5rem;
-      }
-    }
-  </style>
-<% end %>
+        <div class="skill-legend">
+          <h3>Skills</h3>
+          <div class="legend-header">
+            <div class="marker-types">
+              <div class="marker-type">
+                <div class="practice-marker completed"></div>
+                <span>Completed</span>
+              </div>
+              <div class="marker-type">
+                <div class="practice-marker scheduled"></div>
+                <span>Scheduled</span>
+              </div>
+            </div>
+          </div>
+          <% @calendar_data.each do |skill| %>
+            <div class="skill-legend-item">
+              <div class="legend-markers">
+                <div class="legend-marker completed" style="background-color: <%= skill[:color] %>"></div>
+                <div class="legend-marker scheduled" style="border-color: <%= skill[:color] %>"></div>
+              </div>
+              <div class="legend-name"><%= skill[:name] %></div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <% content_for :scripts do %>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-      })
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     });
   </script>
 <% end %>

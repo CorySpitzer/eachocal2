@@ -14,7 +14,17 @@ class CalendarController < ApplicationController
     @start_date = @current_date.beginning_of_month.beginning_of_week(:sunday)
     @end_date = @current_date.end_of_month.end_of_week(:sunday)
     
-    @skills = current_user.skills.includes(:practice_sessions)
+    # Set up subjects and skills
+    @subjects = current_user.subjects.includes(:skills)
+    @selected_subject = params[:subject_id].present? ? current_user.subjects.find_by(id: params[:subject_id]) : nil
+    
+    # Get skills based on subject selection
+    @skills = if @selected_subject
+                @selected_subject.skills.where(user: current_user)
+              else
+                current_user.skills
+              end
+
     @calendar_data = @skills.map.with_index do |skill, index|
       {
         id: skill.id,

@@ -1,0 +1,40 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="mb-0">New Skill for <%= @subject.name %></h2>
+        </div>
+        <div class="card-body">
+          <%= form_with(model: [@subject, @skill], local: true) do |f| %>
+            <% if @skill.errors.any? %>
+              <div class="alert alert-danger">
+                <h4><%= pluralize(@skill.errors.count, "error") %> prohibited this skill from being saved:</h4>
+                <ul>
+                  <% @skill.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= f.label :name, class: "form-label" %>
+              <%= f.text_field :name, class: "form-control" %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :description, class: "form-label" %>
+              <%= f.text_area :description, class: "form-control", rows: 3 %>
+            </div>
+
+            <div class="d-grid gap-2">
+              <%= f.submit "Create Skill", class: "btn btn-primary" %>
+              <%= link_to "Cancel", calendar_path(subject_id: @subject.id), class: "btn btn-outline-secondary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
