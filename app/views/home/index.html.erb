@@ -12,21 +12,34 @@
         <p class="description">Utilize expanding spaced repetition to maintain skill mastery while using less time and effort over time.</p>
         <div class="input-section" data-controller="subject-skills">
           <div class="form-group mb-3">
+            <% subjects_data = @subjects.map { |s| 
+                { 
+                  id: s.id, 
+                  name: s.name, 
+                  skills: s.skills.map { |skill| { id: skill.id, name: skill.name } }
+                }
+              } %>
+            <div class="debug-info" style="text-align: left; margin-bottom: 10px;">
+              <strong>Debug Info:</strong><br>
+              Number of subjects: <%= @subjects.size %><br>
+              Subjects:<br>
+              <% @subjects.each do |subject| %>
+                - <%= subject.name %> (ID: <%= subject.id %>): <%= subject.skills.size %> skills<br>
+                <% subject.skills.each do |skill| %>
+                  &nbsp;&nbsp;• <%= skill.name %><br>
+                <% end %>
+              <% end %>
+            </div>
+            <%= debug subjects_data %>  
             <%= select_tag :subject_id,
-                options_from_collection_for_select(current_user.subjects, :id, :name),
+                options_from_collection_for_select(@subjects, :id, :name),
                 { 
                   prompt: "Select a Subject (optional)",
                   class: "form-select",
                   data: {
                     subject_skills_target: "subjectSelect",
                     action: "change->subject-skills#updateSkillsDropdown",
-                    subjects: current_user.subjects.map { |s| 
-                      { 
-                        id: s.id, 
-                        name: s.name, 
-                        skills: s.skills.map { |skill| { id: skill.id, name: skill.name } }
-                      }
-                    }.to_json
+                    subjects: subjects_data.to_json
                   }
                 } %>
             <div class="mt-2">
