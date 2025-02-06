@@ -51,18 +51,24 @@ async function loadExistingSkills() {
 }
 
 async function addSkill() {
-    const skillInput = document.getElementById('skillInput');
+    const skillSelect = document.getElementById('skill_id');
+    const newSkillInput = document.getElementById('newSkillInput');
     const startDateInput = document.getElementById('startDate');
-    const subjectSelect = document.getElementById('subjectSelect');
+    const subjectSelect = document.getElementById('subject_id');
     const skillList = document.getElementById('skillList');
 
-    if (!skillInput.value || !startDateInput.value) {
-        alert('Please enter both skill name and start date');
+    // Get skill name from either dropdown or text input
+    const skillName = newSkillInput.value || 
+                     (skillSelect.selectedOptions[0]?.text !== 'Select Existing Skill' ? 
+                      skillSelect.selectedOptions[0]?.text : '');
+
+    if (!skillName || !startDateInput.value) {
+        alert('Please either select an existing skill or enter a new skill name, and provide a start date');
         return;
     }
 
     const skillData = {
-        name: skillInput.value,
+        name: skillName,
         pattern: 'Classic', // Default pattern
         start_date: startDateInput.value
     };
@@ -93,7 +99,8 @@ async function addSkill() {
         createSkillElement(data.skill, data.practice_sessions);
         
         // Clear inputs
-        skillInput.value = '';
+        newSkillInput.value = '';
+        skillSelect.value = '';
         subjectSelect.value = ''; // Reset subject selection
     } catch (error) {
         alert('Error saving skill: ' + error.message);
