@@ -9,55 +9,31 @@
                         data: { turbo_frame: "calendar" } do %>
               <i class="bi bi-chevron-left"></i>
             <% end %>
-            
-            <div class="date-selector">
-              <div class="select-group">
-                <a href="#" class="calendar-arrow" 
-                   data-action="click->calendar#prevMonth"
-                   aria-label="Previous Month">&lt;</a>
-                <select id="month-select" 
-                        class="form-select"
-                        data-action="change->calendar#changeMonth">
-                  <% (1..12).each do |month| %>
-                    <option value="<%= month %>" 
-                            <%= "selected" if month == @current_date.month %>>
-                      <%= Date::MONTHNAMES[month] %>
-                    </option>
-                  <% end %>
-                </select>
-                <a href="#" class="calendar-arrow"
-                   data-action="click->calendar#nextMonth"
-                   aria-label="Next Month">&gt;</a>
-              </div>
-              
-              <div class="select-group">
-                <a href="#" class="calendar-arrow"
-                   data-action="click->calendar#prevYear"
-                   aria-label="Previous Year">&lt;</a>
-                <select id="year-select" 
-                        class="form-select"
-                        data-action="change->calendar#changeYear">
-                  <% ((Time.current.year - 1)..(Time.current.year + 5)).each do |year| %>
-                    <option value="<%= year %>" 
-                            <%= "selected" if year == @current_date.year %>>
-                      <%= year %>
-                    </option>
-                  <% end %>
-                </select>
-                <a href="#" class="calendar-arrow"
-                   data-action="click->calendar#nextYear"
-                   aria-label="Next Year">&gt;</a>
-              </div>
-            </div>
-
+            <h2 class="calendar-title"><%= @current_date.strftime("%B %Y") %></h2>
             <%= link_to calendar_path(year: @next_month.year, month: @next_month.month),
                         class: "nav-btn",
                         data: { turbo_frame: "calendar" } do %>
               <i class="bi bi-chevron-right"></i>
             <% end %>
           </div>
+
+          <div class="subject-selector">
+            <%= form_tag calendar_path, method: :get, class: "subject-form", data: { turbo_frame: "calendar" } do %>
+              <div class="form-group">
+                <%= select_tag :subject_id,
+                              options_from_collection_for_select(current_user.subjects, :id, :name, params[:subject_id]),
+                              prompt: "All Subjects",
+                              class: "form-select",
+                              onchange: "this.form.requestSubmit()" %>
+              </div>
+            <% end %>
+
+            <% if @selected_subject %>
+              <%= link_to "Add New Skill", new_subject_skill_path(@selected_subject), class: "btn btn-sm btn-outline-primary ms-2" %>
+            <% end %>
+          </div>
         </div>
-        
+
         <div class="calendar-grid">
           <% %w[Sun Mon Tue Wed Thu Fri Sat].each do |day| %>
             <div class="calendar-day-header"><%= day %></div>
@@ -65,44 +41,29 @@
           
           <% date = @start_date %>
           <% while date <= @end_date do %>
-            <div class="calendar-day <%= 'other-month' if date.month != @current_date.month %>"
-                 data-date="<%= date.to_date %>">
+            <div class="calendar-day <%= 'other-month' if date.month != @current_date.month %>">
               <div class="day-number"><%= date.day %></div>
               <div class="practice-markers">
-                <% @calendar_data.each do |skill| %>
-                  <% if skill[:completed_sessions].include?(date.to_date) %>
-                    <div class="practice-marker completed" 
-                         data-color="<%= skill[:color] %>"
-                         data-bs-toggle="tooltip"
-                         title="Completed: <%= skill[:name] %>"></div>
-                  <% end %>
-                  <% if skill[:scheduled_sessions].include?(date.to_date) %>
-                    <div class="practice-marker scheduled" 
-                         data-color="<%= skill[:color] %>"
-                         data-bs-toggle="tooltip"
-                         title="Scheduled: <%= skill[:name] %>"></div>
-                  <% end %>
+              <% @calendar_data.each do |skill| %>
+                <% if skill[:completed_sessions].include?(date.to_date) %>
+                  <div class="practice-marker completed" 
+                       data-color="<%= skill[:color] %>"
+                       data-bs-toggle="tooltip"
+                       title="Completed: <%= skill[:name] %>"></div>
                 <% end %>
+                <% if skill[:scheduled_sessions].include?(date.to_date) %>
+                  <div class="practice-marker scheduled" 
+                       data-color="<%= skill[:color] %>"
+                       data-bs-toggle="tooltip"
+                       title="Scheduled: <%= skill[:name] %>"></div>
+                <% end %>
+              <% end %>
               </div>
             </div>
             <% date = date.next_day %>
           <% end %>
         </div>
-
-        <div class="skill-legend">
-          <h3>Skills</h3>
-          <div class="legend-header">
-            <div class="marker-types">
-              <div class="marker-type">
-                <div class="practice-marker completed"></div>
-                <span>Completed</span>
-              </div>
-              <div class="marker-type">
-                <div class="practice-marker scheduled"></div>
-                <span>Scheduled</span>
-              </div>
-            </div>
-          </div>
+        <div class="calendar-legend">
           <% @calendar_data.each do |skill| %>
             <div class="skill-legend-item">
               <div class="legend-markers">
@@ -159,281 +120,6 @@
                   data: { subject_skills_target: "newSkillLink" } %>
             <% end %>
           </div>
-        </div>
-      </div>
-
-      <div class="calendar-container" data-controller="calendar skill-colors">
-        <div class="calendar-header">
-          <div class="calendar-nav">
-            <%= link_to calendar_path(year: @prev_month.year, month: @prev_month.month),
-                        class: "nav-btn",
-                        data: { turbo_frame: "calendar" } do %>
-              <i class="bi bi-chevron-left"></i>
-            <% end %>
-            
-            <div class="date-selector">
-              <div class="select-group">
-                <a href="#" class="calendar-arrow" 
-                   data-action="click->calendar#prevMonth"
-                   aria-label="Previous Month">&lt;</a>
-                <select id="month-select" 
-                        class="form-select"
-                        data-action="change->calendar#changeMonth">
-                  <% (1..12).each do |month| %>
-                    <option value="<%= month %>" 
-                            <%= "selected" if month == @current_date.month %>>
-                      <%= Date::MONTHNAMES[month] %>
-                    </option>
-                  <% end %>
-                </select>
-                <a href="#" class="calendar-arrow"
-                   data-action="click->calendar#nextMonth"
-                   aria-label="Next Month">&gt;</a>
-              </div>
-              
-              <div class="select-group">
-                <a href="#" class="calendar-arrow"
-                   data-action="click->calendar#prevYear"
-                   aria-label="Previous Year">&lt;</a>
-                <select id="year-select" 
-                        class="form-select"
-                        data-action="change->calendar#changeYear">
-                  <% ((Time.current.year - 1)..(Time.current.year + 5)).each do |year| %>
-                    <option value="<%= year %>" 
-                            <%= "selected" if year == @current_date.year %>>
-                      <%= year %>
-                    </option>
-                  <% end %>
-                </select>
-                <a href="#" class="calendar-arrow"
-                   data-action="click->calendar#nextYear"
-                   aria-label="Next Year">&gt;</a>
-              </div>
-            </div>
-
-            <%= link_to calendar_path(year: @next_month.year, month: @next_month.month),
-                        class: "nav-btn",
-                        data: { turbo_frame: "calendar" } do %>
-              <i class="bi bi-chevron-right"></i>
-            <% end %>
-          </div>
-        </div>
-        
-        <div class="calendar-grid">
-          <% %w[Sun Mon Tue Wed Thu Fri Sat].each do |day| %>
-            <div class="calendar-day-header"><%= day %></div>
-          <% end %>
-          
-          <% date = @start_date %>
-          <% while date <= @end_date do %>
-            <div class="calendar-day <%= 'other-month' if date.month != @current_date.month %>"
-                 data-date="<%= date.to_date %>">
-              <div class="day-number"><%= date.day %></div>
-              <div class="practice-markers">
-                <% @calendar_data.each do |skill| %>
-                  <% if skill[:completed_sessions].include?(date.to_date) %>
-                    <div class="practice-marker completed" 
-                         data-color="<%= skill[:color] %>"
-                         data-bs-toggle="tooltip"
-                         title="Completed: <%= skill[:name] %>"></div>
-                  <% end %>
-                  <% if skill[:scheduled_sessions].include?(date.to_date) %>
-                    <div class="practice-marker scheduled" 
-                         data-color="<%= skill[:color] %>"
-                         data-bs-toggle="tooltip"
-                         title="Scheduled: <%= skill[:name] %>"></div>
-                  <% end %>
-                <% end %>
-              </div>
-            </div>
-            <% date = date.next_day %>
-          <% end %>
-        </div>
-
-        <div class="skill-legend">
-          <h3>Skills</h3>
-          <div class="legend-header">
-            <div class="marker-types">
-              <div class="marker-type">
-                <div class="practice-marker completed"></div>
-                <span>Completed</span>
-              </div>
-              <div class="marker-type">
-                <div class="practice-marker scheduled"></div>
-                <span>Scheduled</span>
-              </div>
-            </div>
-          </div>
-          <% @calendar_data.each do |skill| %>
-            <div class="skill-legend-item">
-              <div class="legend-markers">
-                <div class="legend-marker completed" data-color="<%= skill[:color] %>"></div>
-                <div class="legend-marker scheduled" data-color="<%= skill[:color] %>"></div>
-              </div>
-              <div class="legend-name"><%= skill[:name] %></div>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="container mt-4">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="skills-selector mb-4" data-controller="subject-skills">
-        <div class="row g-3">
-          <div class="col-md-4">
-            <label for="subject_id" class="form-label">Subject</label>
-            <%= select_tag :subject_id, 
-                options_from_collection_for_select(
-                  @subjects || [], 
-                  :id, 
-                  :name, 
-                  @selected_subject&.id
-                ),
-                { 
-                  prompt: "Select a subject",
-                  class: "form-select",
-                  data: { 
-                    subject_skills_target: "subjectSelect",
-                    action: "change->subject-skills#updateSkillsDropdown",
-                    skills: (@subjects || []).map { |s| { id: s.id, name: s.name, skills: s.skills.map { |skill| { id: skill.id, name: skill.name } } }.to_json }
-                  }
-                } %>
-          </div>
-          
-          <div class="col-md-4">
-            <label for="skill_id" class="form-label">Skill</label>
-            <%= select_tag :skill_id,
-                options_for_select([["Select a skill", ""]]),
-                class: "form-select",
-                data: { subject_skills_target: "skillSelect" } %>
-          </div>
-          
-          <div class="col-md-4 d-flex align-items-end">
-            <% if @selected_subject %>
-              <%= link_to "Add New Skill", 
-                  new_subject_skill_path(@selected_subject),
-                  class: "btn btn-outline-primary",
-                  data: { subject_skills_target: "newSkillLink" } %>
-            <% end %>
-          </div>
-        </div>
-      </div>
-
-      <div class="calendar-container" data-controller="calendar skill-colors">
-        <div class="calendar-header">
-          <div class="calendar-nav">
-            <%= link_to calendar_path(year: @prev_month.year, month: @prev_month.month),
-                        class: "nav-btn",
-                        data: { turbo_frame: "calendar" } do %>
-              <i class="bi bi-chevron-left"></i>
-            <% end %>
-            
-            <div class="date-selector">
-              <div class="select-group">
-                <a href="#" class="calendar-arrow" 
-                   data-action="click->calendar#prevMonth"
-                   aria-label="Previous Month">&lt;</a>
-                <select id="month-select" 
-                        class="form-select"
-                        data-action="change->calendar#changeMonth">
-                  <% (1..12).each do |month| %>
-                    <option value="<%= month %>" 
-                            <%= "selected" if month == @current_date.month %>>
-                      <%= Date::MONTHNAMES[month] %>
-                    </option>
-                  <% end %>
-                </select>
-                <a href="#" class="calendar-arrow"
-                   data-action="click->calendar#nextMonth"
-                   aria-label="Next Month">&gt;</a>
-              </div>
-              
-              <div class="select-group">
-                <a href="#" class="calendar-arrow"
-                   data-action="click->calendar#prevYear"
-                   aria-label="Previous Year">&lt;</a>
-                <select id="year-select" 
-                        class="form-select"
-                        data-action="change->calendar#changeYear">
-                  <% ((Time.current.year - 1)..(Time.current.year + 5)).each do |year| %>
-                    <option value="<%= year %>" 
-                            <%= "selected" if year == @current_date.year %>>
-                      <%= year %>
-                    </option>
-                  <% end %>
-                </select>
-                <a href="#" class="calendar-arrow"
-                   data-action="click->calendar#nextYear"
-                   aria-label="Next Year">&gt;</a>
-              </div>
-            </div>
-
-            <%= link_to calendar_path(year: @next_month.year, month: @next_month.month),
-                        class: "nav-btn",
-                        data: { turbo_frame: "calendar" } do %>
-              <i class="bi bi-chevron-right"></i>
-            <% end %>
-          </div>
-        </div>
-        
-        <div class="calendar-grid">
-          <% %w[Sun Mon Tue Wed Thu Fri Sat].each do |day| %>
-            <div class="calendar-day-header"><%= day %></div>
-          <% end %>
-          
-          <% date = @start_date %>
-          <% while date <= @end_date do %>
-            <div class="calendar-day <%= 'other-month' if date.month != @current_date.month %>"
-                 data-date="<%= date.to_date %>">
-              <div class="day-number"><%= date.day %></div>
-              <div class="practice-markers">
-                <% @calendar_data.each do |skill| %>
-                  <% if skill[:completed_sessions].include?(date.to_date) %>
-                    <div class="practice-marker completed" 
-                         data-color="<%= skill[:color] %>"
-                         data-bs-toggle="tooltip"
-                         title="Completed: <%= skill[:name] %>"></div>
-                  <% end %>
-                  <% if skill[:scheduled_sessions].include?(date.to_date) %>
-                    <div class="practice-marker scheduled" 
-                         data-color="<%= skill[:color] %>"
-                         data-bs-toggle="tooltip"
-                         title="Scheduled: <%= skill[:name] %>"></div>
-                  <% end %>
-                <% end %>
-              </div>
-            </div>
-            <% date = date.next_day %>
-          <% end %>
-        </div>
-
-        <div class="skill-legend">
-          <h3>Skills</h3>
-          <div class="legend-header">
-            <div class="marker-types">
-              <div class="marker-type">
-                <div class="practice-marker completed"></div>
-                <span>Completed</span>
-              </div>
-              <div class="marker-type">
-                <div class="practice-marker scheduled"></div>
-                <span>Scheduled</span>
-              </div>
-            </div>
-          </div>
-          <% @calendar_data.each do |skill| %>
-            <div class="skill-legend-item">
-              <div class="legend-markers">
-                <div class="legend-marker completed" data-color="<%= skill[:color] %>"></div>
-                <div class="legend-marker scheduled" data-color="<%= skill[:color] %>"></div>
-              </div>
-              <div class="legend-name"><%= skill[:name] %></div>
-            </div>
-          <% end %>
         </div>
       </div>
     </div>
