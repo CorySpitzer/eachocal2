@@ -19,18 +19,6 @@
                   skills: s.skills.map { |skill| { id: skill.id, name: skill.name } }
                 }
               } %>
-            <div class="debug-info" style="text-align: left; margin-bottom: 10px;">
-              <strong>Debug Info:</strong><br>
-              Number of subjects: <%= @subjects.size %><br>
-              Subjects:<br>
-              <% @subjects.each do |subject| %>
-                - <%= subject.name %> (ID: <%= subject.id %>): <%= subject.skills.size %> skills<br>
-                <% subject.skills.each do |skill| %>
-                  &nbsp;&nbsp;• <%= skill.name %><br>
-                <% end %>
-              <% end %>
-            </div>
-            <%= debug subjects_data %>  
             <%= select_tag :subject_id,
                 options_from_collection_for_select(@subjects, :id, :name),
                 { 
