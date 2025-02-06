@@ -1,61 +1,61 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-8 offset-md-2 text-center">
-      <div class="container">
+    <div class="col-md-8 offset-md-2">
+      <div class="text-center mb-4">
         <h1>EchoCal:</h1>
         <h2>A Skill Schedule Manager</h2>
         <p class="description">Utilize expanding spaced repetition to maintain skill mastery while using less time and effort over time.</p>
-        
-        <div class="input-section" data-controller="subject-skills">
-          <div class="row justify-content-center">
-            <div class="col-md-6">
-              <div class="form-group mb-3">
-                <% subjects_data = @subjects.map { |s| 
-                    { 
-                      id: s.id, 
-                      name: s.name, 
-                      skills: s.skills.map { |skill| { id: skill.id, name: skill.name } }
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="input-section" data-controller="subject-skills">
+            <div class="form-group mb-3">
+              <% subjects_data = @subjects.map { |s| 
+                  { 
+                    id: s.id, 
+                    name: s.name, 
+                    skills: s.skills.map { |skill| { id: skill.id, name: skill.name } }
+                  }
+                } %>
+              <%= select_tag :subject_id,
+                  options_from_collection_for_select(@subjects, :id, :name),
+                  { 
+                    prompt: "Select a Subject (optional)",
+                    class: "form-select mb-2",
+                    data: {
+                      subject_skills_target: "subjectSelect",
+                      action: "change->subject-skills#updateSkillsDropdown",
+                      subjects: subjects_data.to_json
                     }
                   } %>
-                <%= select_tag :subject_id,
-                    options_from_collection_for_select(@subjects, :id, :name),
-                    { 
-                      prompt: "Select a Subject (optional)",
-                      class: "form-select mb-2",
-                      data: {
-                        subject_skills_target: "subjectSelect",
-                        action: "change->subject-skills#updateSkillsDropdown",
-                        subjects: subjects_data.to_json
-                      }
-                    } %>
-                <%= link_to "Create New Subject", new_subject_path, class: "btn btn-sm btn-outline-primary" %>
-              </div>
-
-              <div class="form-group mb-3">
-                <%= select_tag :base_skill_id,
-                    options_from_collection_for_select(@base_skills, :id, :name),
-                    { 
-                      prompt: "Select a Skill to Add",
-                      class: "form-select mb-2"
-                    } %>
-                <input type="text" 
-                       id="newSkillInput" 
-                       class="form-control" 
-                       placeholder="Or enter a custom skill">
-              </div>
-
-              <div class="form-group mb-3">
-                <input type="date" id="startDate" class="form-control">
-              </div>
-
-              <button id="addSkillBtn" class="btn btn-primary">Add Skill</button>
+              <%= link_to "Create New Subject", new_subject_path, class: "btn btn-sm btn-outline-primary" %>
             </div>
-          </div>
 
-          <div id="skillList" class="skill-list mt-4">
-            <!-- Skills will be added here dynamically -->
+            <div class="form-group mb-3">
+              <%= select_tag :base_skill_id,
+                  options_from_collection_for_select(@base_skills, :id, :name),
+                  { 
+                    prompt: "Select a Skill to Add",
+                    class: "form-select mb-2"
+                  } %>
+              <input type="text" 
+                     id="newSkillInput" 
+                     class="form-control" 
+                     placeholder="Or enter a custom skill">
+            </div>
+
+            <div class="form-group mb-3">
+              <input type="date" id="startDate" class="form-control">
+            </div>
+
+            <button id="addSkillBtn" class="btn btn-primary mb-4">Add Skill</button>
           </div>
         </div>
+      </div>
+
+      <div id="skillList" class="skill-list">
+        <!-- Skills will be added here dynamically -->
       </div>
     </div>
   </div>

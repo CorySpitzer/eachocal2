@@ -3,11 +3,35 @@
   margin: 0 auto;
 }
 
-.skill-list {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
 .form-group {
   margin-bottom: 1rem;
+}
+
+.skill-list {
+  margin-top: 2rem;
+}
+
+.skill-list .calendar-widget {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  background-color: #fff;
+}
+
+.skill-list .skill-header {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.skill-list .skill-name {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #212529;
+}
+
+.skill-list .skill-pattern {
+  font-size: 0.875rem;
+  color: #6c757d;
 }
