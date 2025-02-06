@@ -10,18 +10,41 @@
         <h1>EchoCal:</h1>
         <h2>A Skill Schedule Manager</h2>
         <p class="description">Utilize expanding spaced repetition to maintain skill mastery while using less time and effort over time.</p>
-        <div class="input-section">
+        <div class="input-section" data-controller="subject-skills">
           <div class="form-group mb-3">
-            <select id="subjectSelect" class="form-select">
-              <option value="">Select a Subject (optional)</option>
-              <%= current_user.subjects.map { |subject| content_tag(:option, subject.name, value: subject.id) }.join.html_safe %>
-            </select>
+            <%= select_tag :subject_id,
+                options_from_collection_for_select(current_user.subjects, :id, :name),
+                { 
+                  prompt: "Select a Subject (optional)",
+                  class: "form-select",
+                  data: {
+                    subject_skills_target: "subjectSelect",
+                    action: "change->subject-skills#updateSkillsDropdown",
+                    subjects: current_user.subjects.map { |s| 
+                      { 
+                        id: s.id, 
+                        name: s.name, 
+                        skills: s.skills.map { |skill| { id: skill.id, name: skill.name } }
+                      }
+                    }.to_json
+                  }
+                } %>
             <div class="mt-2">
               <%= link_to "Create New Subject", new_subject_path, class: "btn btn-sm btn-outline-primary" %>
             </div>
           </div>
           <div class="form-group mb-3">
-            <input type="text" id="skillInput" class="form-control" placeholder="Add skill">
+            <label class="form-label">Select or Create a Skill</label>
+            <div class="d-flex gap-2">
+              <%= select_tag :skill_id,
+                  options_for_select([["Select Existing Skill", ""]]),
+                  class: "form-select",
+                  data: { subject_skills_target: "skillSelect" } %>
+              <input type="text" 
+                     id="newSkillInput" 
+                     class="form-control" 
+                     placeholder="Or enter a new skill">
+            </div>
           </div>
           <div class="form-group mb-3">
             <input type="date" id="startDate" class="form-control">
