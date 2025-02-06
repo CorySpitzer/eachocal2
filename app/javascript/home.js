@@ -18,8 +18,8 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
-    const generateBtn = document.getElementById('generateBtn');
-    generateBtn.addEventListener('click', addSkill);
+    const addSkillBtn = document.getElementById('addSkillBtn');
+    addSkillBtn.addEventListener('click', addSkill);
 
     // Set default date to today
     document.getElementById('startDate').valueAsDate = new Date(REFERENCE_TIME);
@@ -51,19 +51,19 @@ async function loadExistingSkills() {
 }
 
 async function addSkill() {
-    const skillSelect = document.getElementById('skill_id');
+    const baseSkillSelect = document.getElementById('base_skill_id');
     const newSkillInput = document.getElementById('newSkillInput');
     const startDateInput = document.getElementById('startDate');
     const subjectSelect = document.getElementById('subject_id');
     const skillList = document.getElementById('skillList');
 
-    // Get skill name from either dropdown or text input
+    // Get skill name from either base skill dropdown or text input
     const skillName = newSkillInput.value || 
-                     (skillSelect.selectedOptions[0]?.text !== 'Select Existing Skill' ? 
-                      skillSelect.selectedOptions[0]?.text : '');
+                     (baseSkillSelect.selectedOptions[0]?.text !== 'Select a Skill to Add' ? 
+                      baseSkillSelect.selectedOptions[0]?.text : '');
 
     if (!skillName || !startDateInput.value) {
-        alert('Please either select an existing skill or enter a new skill name, and provide a start date');
+        alert('Please either select a skill to add or enter a custom skill name, and provide a start date');
         return;
     }
 
@@ -86,7 +86,8 @@ async function addSkill() {
                 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
             },
             body: JSON.stringify({
-                skill: skillData
+                skill: skillData,
+                base_skill_id: baseSkillSelect.value || null
             })
         });
 
@@ -100,10 +101,12 @@ async function addSkill() {
         
         // Clear inputs
         newSkillInput.value = '';
-        skillSelect.value = '';
-        subjectSelect.value = ''; // Reset subject selection
+        baseSkillSelect.value = '';
+        startDateInput.value = '';
+
     } catch (error) {
-        alert('Error saving skill: ' + error.message);
+        console.error('Error saving skill:', error);
+        alert(error.message);
     }
 }
 

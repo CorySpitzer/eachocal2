@@ -32,13 +32,6 @@
               </div>
 
               <div class="form-group mb-3">
-                <%= select_tag :skill_id,
-                    options_for_select([["Select Existing Skill", ""]]),
-                    class: "form-select",
-                    data: { subject_skills_target: "skillSelect" } %>
-              </div>
-
-              <div class="form-group mb-3">
                 <%= select_tag :base_skill_id,
                     options_from_collection_for_select(@base_skills, :id, :name),
                     { 

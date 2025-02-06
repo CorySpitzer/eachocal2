@@ -1,19 +1,19 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["subjectSelect", "skillSelect"]
+  static targets = ["subjectSelect"]
 
   connect() {
     this.setupSkillInputs()
   }
 
   setupSkillInputs() {
-    const skillSelect = this.skillSelectTarget
     const newSkillInput = document.getElementById('newSkillInput')
+    const baseSkillSelect = document.getElementById('base_skill_id')
 
     // When dropdown is selected, clear text input
-    skillSelect.addEventListener('change', () => {
-      if (skillSelect.value) {
+    baseSkillSelect.addEventListener('change', () => {
+      if (baseSkillSelect.value) {
         newSkillInput.value = ''
       }
     })
@@ -21,36 +21,13 @@ export default class extends Controller {
     // When text is entered, clear dropdown selection
     newSkillInput.addEventListener('input', () => {
       if (newSkillInput.value) {
-        skillSelect.value = ''
+        baseSkillSelect.value = ''
       }
     })
   }
 
   updateSkillsDropdown() {
-    const subjectId = this.subjectSelectTarget.value
-    const skillSelect = this.skillSelectTarget
-    
-    // Clear existing options
-    skillSelect.innerHTML = '<option value="">Select Existing Skill</option>'
-    
-    if (!subjectId) return
-
-    try {
-      // Get skills for the selected subject from the data attribute
-      const subjectsData = this.subjectSelectTarget.dataset.subjects
-      const subjects = JSON.parse(subjectsData)
-      const subject = subjects.find(s => s.id.toString() === subjectId)
-      
-      if (subject && subject.skills && subject.skills.length > 0) {
-        subject.skills.forEach(skill => {
-          const option = document.createElement('option')
-          option.value = skill.id
-          option.textContent = skill.name
-          skillSelect.appendChild(option)
-        })
-      }
-    } catch (error) {
-      console.error("Error updating skills dropdown:", error)
-    }
+    // This method is now empty since we don't need to update any skill dropdown
+    // but we keep it because it's still called by the subject select's change event
   }
 }
