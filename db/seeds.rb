@@ -126,20 +126,14 @@ algebra_skills = {
 # First, remove any existing associations
 algebra.skills.clear
 
-# Create skills for each topic
+# Create base skills for each topic
 algebra_skills.each do |topic, skills|
   skills.each do |skill_name|
-    skill = Skill.find_or_create_by!(name: skill_name, user: user) do |s|
-      s.pattern = 'Classic'  # Default pattern
-      s.start_date = Time.new(2025, 1, 24, 15, 1, 28, "-05:00")  # Default start date
-    end
-    
-    # Ensure the skill is associated with algebra
-    unless algebra.skills.include?(skill)
-      algebra.skills << skill
+    # Create base skill without user, pattern, or start_date
+    skill = Skill.find_or_create_by!(name: skill_name) do |s|
+      s.base_skill = true
     end
   end
 end
 
-puts "Created #{Skill.count} skills for Algebra"
-puts "Algebra subject has #{algebra.skills.count} skills"
+puts "Created #{Skill.base_skills.count} base skills for Algebra"

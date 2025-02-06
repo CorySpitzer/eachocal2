@@ -26,4 +26,5 @@ Rails.application.routes.draw do
   end
 
   get '/calendar', to: 'calendar#index'
+  post '/add_skill', to: 'home#add_skill'
 end
