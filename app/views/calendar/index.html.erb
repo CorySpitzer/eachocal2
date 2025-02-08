@@ -2,6 +2,7 @@
   <div class="row">
     <div class="col-md-12">
       <div class="calendar-container" data-controller="calendar skill-colors">
+        <%= javascript_include_tag "calendar" %>
         <div class="calendar-header">
           <div class="calendar-nav">
             <%= link_to calendar_path(year: @prev_month.year, month: @prev_month.month),
@@ -46,14 +47,21 @@
               <div class="practice-markers">
               <% @calendar_data.each do |skill| %>
                 <% if skill[:completed_sessions].include?(date.to_date) %>
+                  <% session = skill[:practice_sessions].find { |s| s.scheduled_date == date.to_date } %>
                   <div class="practice-marker completed" 
                        data-color="<%= skill[:color] %>"
+                       data-session-id="<%= session.id %>"
+                       data-rating="<%= session.rating %>"
                        data-bs-toggle="tooltip"
-                       title="Completed: <%= skill[:name] %>"></div>
+                       style="opacity: <%= 0.2 + (session.rating || 0) * 0.16 %>;"
+                       title="Completed: <%= skill[:name] %> (<%= '★' * session.rating %>)"></div>
                 <% end %>
                 <% if skill[:scheduled_sessions].include?(date.to_date) %>
+                  <% session = skill[:practice_sessions].find { |s| s.scheduled_date == date.to_date } %>
                   <div class="practice-marker scheduled" 
                        data-color="<%= skill[:color] %>"
+                       data-session-id="<%= session.id %>"
+                       data-rating="0"
                        data-bs-toggle="tooltip"
                        title="Scheduled: <%= skill[:name] %>"></div>
                 <% end %>

@@ -25,6 +25,11 @@ Rails.application.routes.draw do
       end
       resources :practice_sessions, only: [:create]
     end
+    resources :practice_sessions, only: [] do
+      member do
+        post 'rate'
+      end
+    end
     post '/practice_sessions/:id/rate', to: 'practice_sessions#rate'
     resources :skills, only: [:index, :create, :update, :destroy]
   end

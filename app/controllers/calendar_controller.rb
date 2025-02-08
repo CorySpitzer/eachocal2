@@ -26,20 +26,24 @@ class CalendarController < ApplicationController
               end
 
     @calendar_data = @skills.map.with_index do |skill, index|
+      practice_sessions = skill.practice_sessions
+                             .where(scheduled_date: @start_date..@end_date)
+                             .order(:scheduled_date)
+
       {
         id: skill.id,
         name: skill.name,
         color: generate_color(index),
         # Sessions with ratings are completed
-        completed_sessions: skill.practice_sessions
-                               .where(scheduled_date: @start_date..@end_date)
-                               .where.not(rating: nil)
-                               .pluck(:scheduled_date),
+        completed_sessions: practice_sessions
+                            .where.not(rating: nil)
+                            .pluck(:scheduled_date),
         # Sessions without ratings are scheduled
-        scheduled_sessions: skill.practice_sessions
-                               .where(scheduled_date: @start_date..@end_date)
-                               .where(rating: nil)
-                               .pluck(:scheduled_date)
+        scheduled_sessions: practice_sessions
+                            .where(rating: nil)
+                            .pluck(:scheduled_date),
+        # Include all practice sessions for this date range
+        practice_sessions: practice_sessions
       }
     end
   end
