@@ -126,14 +126,15 @@ document.addEventListener('DOMContentLoaded', () => {
             marker.title = `Completed: ${skillName} (${'★'.repeat(newRating)})`;
         });
 
-        // Position the dropdown near the marker
-        const markerRect = marker.getBoundingClientRect();
-        const calendarRect = calendar.getBoundingClientRect();
+        // Position the dropdown relative to the marker
+        ratingDropdown.style.position = 'absolute';
+        ratingDropdown.style.bottom = '100%';
+        ratingDropdown.style.left = '0';
+        ratingDropdown.style.backgroundColor = 'white';  // Ensure it's not transparent
+        ratingDropdown.style.zIndex = '1000';  // Keep it above other elements
         
-        ratingDropdown.style.top = `${markerRect.bottom - calendarRect.top + 5}px`;
-        ratingDropdown.style.left = `${markerRect.left - calendarRect.left}px`;
-        
-        calendar.appendChild(ratingDropdown);
+        // Add it to the marker's parent to maintain stability
+        marker.parentElement.appendChild(ratingDropdown);
         event.stopPropagation();
     });
 });
