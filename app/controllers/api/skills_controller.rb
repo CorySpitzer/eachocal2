@@ -88,8 +88,6 @@ module Api
         [1, 3, 7, 14, 30, 45, 90]
       when 'Gentle'
         [1, 2, 3, 5, 8, 13, 21, 34]
-      when 'Custom'
-        [1, 4, 10, 20, 40, 80, 160]
       when 'Double'
         [1, 2, 4, 8, 16, 32, 64, 128]
       when 'Linear'
@@ -99,9 +97,18 @@ module Api
       when 'NLogN'
         # Generate n*log(n) intervals up to about 120 days
         (1..15).map { |n| (n * Math.log(n + 1)).round }
+      when 'ClassicLogN'
+        # Start with Classic pattern for early intervals
+        early = [1, 2, 4, 7]
+        # Then continue with NLogN pattern starting from where we left off
+        # We want the next NLogN interval to be larger than 7
+        later = (4..12).map { |n| (n * Math.log(n + 1)).round }.select { |x| x > 7 }
+        early + later
       else
-        # Default to NLogN
-        (1..15).map { |n| (n * Math.log(n + 1)).round }
+        # Default to ClassicLogN
+        early = [1, 2, 4, 7]
+        later = (4..12).map { |n| (n * Math.log(n + 1)).round }.select { |x| x > 7 }
+        early + later
       end
 
       pattern.map { |days| start_date + days.days }
