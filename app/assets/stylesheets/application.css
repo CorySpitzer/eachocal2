@@ -33,10 +33,12 @@ h1, h2, .description {
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    padding: 0 1rem;
 }
 
 .form-group {
     width: 100%;
+    margin-bottom: 1.5rem;
 }
 
 .form-label {
@@ -50,6 +52,12 @@ input, button, select {
     border: 1px solid #ccc;
     border-radius: 4px;
     width: 100%;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+}
+
+input[type="date"] {
+    padding-right: 0.75rem;
 }
 
 button {
