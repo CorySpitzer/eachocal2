@@ -4,9 +4,9 @@ class CalendarController < ApplicationController
   def index
     # Get the requested year and month from params, default to current date
     @current_date = if params[:year].present? && params[:month].present?
-      Time.new(params[:year].to_i, params[:month].to_i, 1, 14, 1, 28, "-05:00")
+      Date.new(params[:year].to_i, params[:month].to_i, 1)
     else
-      Time.new(2025, 1, 24, 15, 1, 28, "-05:00")
+      Date.today.beginning_of_month
     end
 
     @prev_month = @current_date.prev_month.beginning_of_month
