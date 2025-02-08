@@ -274,95 +274,99 @@ function createSkillElement(skill, practiceSessions) {
     document.getElementById('skillList').appendChild(skillItem);
 }
 
+function createRatingDropdown(session, onSave) {
+    const ratingContainer = document.createElement('div');
+    ratingContainer.className = 'floating-rating';
+    ratingContainer.style.position = 'absolute';
+    ratingContainer.style.backgroundColor = 'white';
+    ratingContainer.style.padding = '10px';
+    ratingContainer.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+    ratingContainer.style.borderRadius = '4px';
+    ratingContainer.style.zIndex = '1000';
+
+    // Create rating dropdown
+    const ratingSelect = document.createElement('select');
+    ratingSelect.className = 'date-rating';
+    
+    // Add default "not rated" option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '0';
+    defaultOption.textContent = '-- Rate --';
+    ratingSelect.appendChild(defaultOption);
+    
+    // Add star ratings
+    for (let i = 1; i <= 5; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = '★'.repeat(i);
+        if (session.rating === i) {
+            option.selected = true;
+        }
+        ratingSelect.appendChild(option);
+    }
+
+    // Create save button
+    const saveRatingBtn = document.createElement('button');
+    saveRatingBtn.className = 'save-rating-btn';
+    saveRatingBtn.textContent = 'Save';
+    saveRatingBtn.style.marginLeft = '8px';
+
+    // Create cancel button (replacing close button)
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.className = 'cancel-rating-btn';
+    cancelBtn.style.marginLeft = '8px';
+    cancelBtn.addEventListener('click', () => ratingContainer.remove());
+
+    // Create button container
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'rating-buttons';
+    buttonContainer.appendChild(saveRatingBtn);
+    buttonContainer.appendChild(cancelBtn);
+
+    // Handle save button click
+    saveRatingBtn.addEventListener('click', async () => {
+        const rating = ratingSelect.value;
+        try {
+            const response = await fetch(`/api/practice_sessions/${session.id}/rate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ rating: parseInt(rating) })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save rating');
+            }
+
+            // Call the onSave callback
+            if (onSave) {
+                onSave();
+            }
+
+            // Remove the rating container
+            ratingContainer.remove();
+        } catch (error) {
+            console.error('Error saving rating:', error);
+        }
+    });
+
+    ratingContainer.appendChild(ratingSelect);
+    ratingContainer.appendChild(buttonContainer);
+
+    return ratingContainer;
+}
+
 function updateScheduleWithSessions(scheduleSpan, practiceSessions) {
     // Clear previous content
     scheduleSpan.innerHTML = '';
 
     // Add explanatory text
     const explanationText = document.createElement('p');
-    explanationText.textContent = "How well did you know the concept or how well could you solve the problem?";
+    explanationText.textContent = "Click on calendar dates to rate your practice sessions.";
     explanationText.style.marginBottom = '1rem';
     scheduleSpan.appendChild(explanationText);
-
-    practiceSessions.forEach(session => {
-        const dateItem = document.createElement('div');
-        dateItem.className = 'date-item';
-
-        // Create rating dropdown
-        const ratingSelect = document.createElement('select');
-        ratingSelect.className = 'date-rating';
-        
-        // Add default "not rated" option
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '0';
-        defaultOption.textContent = '-- Rate --';
-        ratingSelect.appendChild(defaultOption);
-        
-        // Add star ratings
-        for (let i = 1; i <= 5; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = '★'.repeat(i);
-            if (session.rating === i) {
-                option.selected = true;
-            }
-            ratingSelect.appendChild(option);
-        }
-
-        // Create save button
-        const saveRatingBtn = document.createElement('button');
-        saveRatingBtn.className = 'save-rating-btn';
-        saveRatingBtn.textContent = 'Save';
-        saveRatingBtn.style.display = 'none';
-
-        // Show save button when rating changes
-        ratingSelect.addEventListener('change', () => {
-            saveRatingBtn.style.display = 'inline-block';
-        });
-
-        // Handle save button click
-        saveRatingBtn.addEventListener('click', async () => {
-            const rating = ratingSelect.value;
-            console.log('Save rating clicked:', rating);
-            try {
-                console.log('Sending rating request...');
-                const response = await fetch(`/api/practice_sessions/${session.id}/rate`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ rating: parseInt(rating) })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to save rating');
-                }
-
-                console.log('Rating saved successfully');
-                saveRatingBtn.style.display = 'none';
-                
-                // Always reload the page to refresh the calendar
-                console.log('Reloading page...');
-                window.location.reload();
-            } catch (error) {
-                console.error('Error saving rating:', error);
-            }
-        });
-
-        // Create date text
-        const dateText = document.createElement('span');
-        dateText.textContent = new Date(session.scheduled_date).toLocaleDateString('en-US', { 
-            month: 'short', 
-            day: 'numeric', 
-            year: 'numeric' 
-        });
-
-        // Assemble date item
-        dateItem.appendChild(dateText);
-        dateItem.appendChild(ratingSelect);
-        dateItem.appendChild(saveRatingBtn);
-        scheduleSpan.appendChild(dateItem);
-    });
 }
 
 function updateSchedule(scheduleSpan, startDate, patternName) {
@@ -374,67 +378,13 @@ function updateSchedule(scheduleSpan, startDate, patternName) {
 
     // Add explanatory text
     const explanationText = document.createElement('p');
-    explanationText.textContent = "How well did you know the concept or how well could you solve the problem?";
+    explanationText.textContent = "Click on calendar dates to rate your practice sessions.";
     explanationText.style.marginBottom = '1rem';
     scheduleSpan.appendChild(explanationText);
 
     dates.forEach(date => {
         const dateItem = document.createElement('div');
         dateItem.className = 'date-item';
-
-        // Create rating dropdown
-        const ratingSelect = document.createElement('select');
-        ratingSelect.className = 'date-rating';
-        
-        // Add default "not rated" option
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '0';
-        defaultOption.textContent = '-- Rate --';
-        ratingSelect.appendChild(defaultOption);
-        
-        // Add star ratings
-        for (let i = 1; i <= 5; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = '★'.repeat(i);
-            ratingSelect.appendChild(option);
-        }
-
-        // Create save button
-        const saveRatingBtn = document.createElement('button');
-        saveRatingBtn.className = 'save-rating-btn';
-        saveRatingBtn.textContent = 'Save';
-        saveRatingBtn.style.display = 'none';
-
-        // Show save button when rating changes
-        ratingSelect.addEventListener('change', () => {
-            saveRatingBtn.style.display = 'inline-block';
-        });
-
-        // Handle save button click
-        saveRatingBtn.addEventListener('click', async () => {
-            const rating = ratingSelect.value;
-            console.log('Save rating clicked:', rating);
-            try {
-                console.log('Sending rating request...');
-                const response = await fetch(`/api/practice_sessions/${session.id}/rate`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ rating: parseInt(rating) })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to save rating');
-                }
-
-                console.log('Rating saved successfully');
-                saveRatingBtn.style.display = 'none';
-            } catch (error) {
-                console.error('Error saving rating:', error);
-            }
-        });
 
         // Create date text
         const dateText = document.createElement('span');
@@ -446,8 +396,6 @@ function updateSchedule(scheduleSpan, startDate, patternName) {
 
         // Assemble date item
         dateItem.appendChild(dateText);
-        dateItem.appendChild(ratingSelect);
-        dateItem.appendChild(saveRatingBtn);
         scheduleSpan.appendChild(dateItem);
     });
 }
@@ -541,6 +489,36 @@ function generateMonthCalendar(date, studyDates, today, practiceSessions) {
             } else {
                 dayDiv.classList.add('study-day');
             }
+
+            // Add click handler for study days
+            dayDiv.addEventListener('click', (e) => {
+                // Remove any existing rating dropdowns
+                document.querySelectorAll('.floating-rating').forEach(el => el.remove());
+
+                // Create and position the rating dropdown
+                const ratingDropdown = createRatingDropdown(session || { rating: 0 }, () => {
+                    // Reload the page after successful rating
+                    window.location.reload();
+                });
+
+                // Position the dropdown near the clicked day
+                const rect = dayDiv.getBoundingClientRect();
+                ratingDropdown.style.left = `${rect.left}px`;
+                ratingDropdown.style.top = `${rect.bottom + window.scrollY + 5}px`;
+
+                // Add to document body
+                document.body.appendChild(ratingDropdown);
+
+                // Stop event propagation
+                e.stopPropagation();
+            });
+
+            // Add click handler to document to close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.floating-rating') && !e.target.closest('.day')) {
+                    document.querySelectorAll('.floating-rating').forEach(el => el.remove());
+                }
+            });
         }
         
         // Check if it's today

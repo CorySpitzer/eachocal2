@@ -225,6 +225,12 @@ button:hover {
     background-color: white;
     color: #333;
     border: 3px solid #4CAF50;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.day.study-day:hover {
+    background-color: #e9ecef;
 }
 
 /* Rating colors */
@@ -449,6 +455,64 @@ button:hover {
 .sign-out-btn:hover {
     background-color: #ff4444;
     color: white;
+}
+
+/* Floating Rating Dropdown */
+.floating-rating {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 180px;
+}
+
+.floating-rating .date-rating {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #f8f9fa;
+}
+
+.floating-rating .rating-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.floating-rating .save-rating-btn {
+    padding: 6px 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.floating-rating .save-rating-btn:hover {
+    background-color: #218838;
+}
+
+.floating-rating .cancel-rating-btn {
+    padding: 6px 12px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.floating-rating .cancel-rating-btn:hover {
+    background-color: #c82333;
 }
 
 @media (max-width: 768px) {
