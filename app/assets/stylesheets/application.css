@@ -465,6 +465,7 @@ button:hover {
 
 /* Floating Rating Dropdown */
 .floating-rating {
+    position: absolute;
     background-color: white;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
@@ -474,6 +475,7 @@ button:hover {
     flex-direction: column;
     gap: 12px;
     min-width: 180px;
+    z-index: 1000;
 }
 
 .floating-rating .date-rating {
@@ -570,7 +572,16 @@ button:hover {
     background-color: #218838;
 }
 
+.practice-markers {
+    position: relative;
+    min-height: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
 .practice-marker {
+    position: relative;
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -602,13 +613,6 @@ button:hover {
 
 .practice-marker.completed[data-rating="5"] {
     background-color: #4CAF50;
-}
-
-.practice-markers {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    margin-top: 4px;
 }
 
 @media (max-width: 768px) {

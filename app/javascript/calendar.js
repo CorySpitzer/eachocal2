@@ -127,13 +127,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Position the dropdown relative to the marker
+        const markerRect = marker.getBoundingClientRect();
         ratingDropdown.style.position = 'absolute';
         ratingDropdown.style.bottom = '100%';
-        ratingDropdown.style.left = '0';
-        ratingDropdown.style.backgroundColor = 'white';  // Ensure it's not transparent
-        ratingDropdown.style.zIndex = '1000';  // Keep it above other elements
+        ratingDropdown.style.left = '50%';
+        ratingDropdown.style.transform = 'translateX(-50%)';  // Center it horizontally
+        ratingDropdown.style.backgroundColor = 'white';
+        ratingDropdown.style.zIndex = '1000';
         
-        // Add it to the marker's parent to maintain stability
+        // Add it to the marker's parent for proper positioning
         marker.parentElement.appendChild(ratingDropdown);
         event.stopPropagation();
     });
