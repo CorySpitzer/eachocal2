@@ -18,16 +18,17 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
                 'July', 'August', 'September', 'October', 'November', 'December'];
 
 // Initialize the page
-document.addEventListener('DOMContentLoaded', () => {
+function initializePage() {
     const addSkillBtn = document.getElementById('addSkillBtn');
-    addSkillBtn.addEventListener('click', addSkill);
+    if (addSkillBtn) {  // Only set up if we're on the home page
+        addSkillBtn.addEventListener('click', addSkill);
+        document.getElementById('startDate').valueAsDate = new Date(REFERENCE_TIME);
+        loadExistingSkills();
+    }
+}
 
-    // Set default date to today
-    document.getElementById('startDate').valueAsDate = new Date(REFERENCE_TIME);
-
-    // Load existing skills
-    loadExistingSkills();
-});
+document.addEventListener('DOMContentLoaded', initializePage);
+document.addEventListener('turbo:render', initializePage);
 
 async function loadExistingSkills() {
     try {
