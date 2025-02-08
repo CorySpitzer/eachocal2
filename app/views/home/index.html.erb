@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-8 offset-md-2">
+    <div class="col-lg-8 offset-lg-2">
       <div class="text-center mb-4">
         <h1>EchoCal:</h1>
         <h2>A Skill Schedule Manager</h2>
@@ -8,9 +8,10 @@
       </div>
       
       <div class="row">
-        <div class="col-md-6 mx-auto">
+        <div class="col-12">
           <div class="input-section" data-controller="subject-skills">
             <div class="form-group mb-3">
+              <label for="subject_id" class="form-label">Subject</label>
               <% subjects_data = @subjects.map { |s| 
                   { 
                     id: s.id, 
@@ -29,27 +30,30 @@
                       subjects: subjects_data.to_json
                     }
                   } %>
-              <%= link_to "Create New Subject", new_subject_path, class: "btn btn-sm btn-outline-primary" %>
+              <%= link_to "Create New Subject", new_subject_path, class: "btn btn-sm btn-outline-primary d-inline-block" %>
             </div>
 
             <div class="form-group mb-3">
+              <label for="base_skill_id" class="form-label">Skill</label>
               <%= select_tag :base_skill_id,
                   options_from_collection_for_select(@base_skills, :id, :name),
                   { 
                     prompt: "Select a Skill to Add",
                     class: "form-select mb-2"
                   } %>
+              <label for="newSkillInput" class="form-label">Or Enter Custom Skill</label>
               <input type="text" 
                      id="newSkillInput" 
                      class="form-control" 
-                     placeholder="Or enter a custom skill">
+                     placeholder="Enter a custom skill name">
             </div>
 
             <div class="form-group mb-3">
+              <label for="startDate" class="form-label">Start Date</label>
               <input type="date" id="startDate" class="form-control">
             </div>
 
-            <button id="addSkillBtn" class="btn btn-primary mb-4">Add Skill</button>
+            <button id="addSkillBtn" class="btn btn-primary w-100 mb-4">Add Skill</button>
           </div>
         </div>
       </div>
