@@ -364,3 +364,137 @@ button:hover {
     content: "💾";
     margin-right: 4px;
 }
+
+/* Navigation styles */
+.main-nav {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    position: relative;
+}
+
+.nav-content {
+    max-width: 1450px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: #333;
+}
+
+.hamburger-menu.active {
+    color: #4CAF50;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.left-nav {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.right-nav {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.nav-link {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem;
+}
+
+.nav-link:hover {
+    color: #4CAF50;
+}
+
+.nav-link.active {
+    color: #4CAF50;
+    border-bottom: 2px solid #4CAF50;
+}
+
+.user-email {
+    color: #666;
+}
+
+.sign-out-btn {
+    background: none;
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.sign-out-btn:hover {
+    background-color: #ff4444;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #fff;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .nav-links.show {
+        display: flex;
+    }
+
+    .left-nav, .right-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .right-nav {
+        border-top: 1px solid #eee;
+        padding-top: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .nav-link {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 0;
+    }
+
+    .user-email {
+        padding: 0.5rem 0;
+    }
+
+    .sign-out-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
