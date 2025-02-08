@@ -3,14 +3,14 @@ const REFERENCE_TIME = new Date('2025-01-05T09:54:30-05:00');
 
 // Spaced repetition patterns (in days)
 const PATTERNS = {
+    'NLogN': [1, 2, 6, 12, 20, 30, 42, 55, 70, 85, 102, 120],
     'Classic': [1, 2, 4, 7, 14, 30, 60, 120],
     'Aggressive': [1, 3, 7, 14, 30, 45, 90],
     'Gentle': [1, 2, 3, 5, 8, 13, 21, 34],
     'Custom': [1, 4, 10, 20, 40, 80, 160],
     'Double': [1, 2, 4, 8, 16, 32, 64, 128],
     'Linear': [1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120],
-    'Fibonacci': [1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233],
-    'NLogN': [1, 2, 6, 12, 20, 30, 42, 55, 70, 85, 102, 120]
+    'Fibonacci': [1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233]
 };
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -70,7 +70,7 @@ async function addSkill() {
 
     const skillData = {
         name: skillName,
-        pattern: 'Classic', // Default pattern
+        pattern: 'NLogN', // Default pattern
         start_date: startDateInput.value
     };
 

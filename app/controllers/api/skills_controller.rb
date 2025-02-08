@@ -100,7 +100,8 @@ module Api
         # Generate n*log(n) intervals up to about 120 days
         (1..15).map { |n| (n * Math.log(n + 1)).round }
       else
-        [1, 2, 4, 7, 14, 30, 60, 120] # Default to Classic
+        # Default to NLogN
+        (1..15).map { |n| (n * Math.log(n + 1)).round }
       end
 
       pattern.map { |days| start_date + days.days }
