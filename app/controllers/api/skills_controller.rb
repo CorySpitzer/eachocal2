@@ -96,6 +96,9 @@ module Api
         [1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120]
       when 'Fibonacci'
         [1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233]
+      when 'NLogN'
+        # Generate n*log(n) intervals up to about 120 days
+        (1..15).map { |n| (n * Math.log(n + 1)).round }
       else
         [1, 2, 4, 7, 14, 30, 60, 120] # Default to Classic
       end
