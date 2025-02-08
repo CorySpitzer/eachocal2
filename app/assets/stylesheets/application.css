@@ -388,10 +388,13 @@ button:hover {
     cursor: pointer;
     padding: 0.5rem;
     color: #333;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .hamburger-menu.active {
-    color: #4CAF50;
+    background-color: #4CAF50;
+    color: #000;
 }
 
 .nav-links {
