@@ -211,6 +211,82 @@ function createSkillElement(skill, practiceSessions) {
     calendarWidget.style.display = 'block'; // Show it immediately
     updateCalendar(calendarWidget, skill.start_date, skill.pattern, practiceSessions);
 
+    // Create button container
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+
+    // Create reset button and container
+    const resetContainer = document.createElement('div');
+    resetContainer.className = 'reset-container';
+    resetContainer.style.marginBottom = '10px';
+
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'reset-btn';
+    resetBtn.innerHTML = 'Reset Start Date';
+
+    // Create hidden reset form
+    const resetForm = document.createElement('div');
+    resetForm.className = 'reset-form';
+    resetForm.style.display = 'none';
+    resetForm.style.marginTop = '10px';
+
+    const datePicker = document.createElement('input');
+    datePicker.type = 'date';
+    datePicker.className = 'reset-date-picker';
+    datePicker.value = new Date().toISOString().split('T')[0];
+
+    const saveResetBtn = document.createElement('button');
+    saveResetBtn.className = 'save-reset-btn';
+    saveResetBtn.innerHTML = 'Save New Date';
+    saveResetBtn.style.marginLeft = '8px';
+
+    resetForm.appendChild(datePicker);
+    resetForm.appendChild(saveResetBtn);
+    
+    resetContainer.appendChild(resetBtn);
+    resetContainer.appendChild(resetForm);
+
+    // Toggle reset form
+    resetBtn.addEventListener('click', () => {
+        resetForm.style.display = resetForm.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Handle save reset
+    saveResetBtn.addEventListener('click', async () => {
+        const confirmed = confirm('Are you sure you want to reset the start date? This will clear all existing ratings.');
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`/api/skills/${skill.id}/reset_start_date`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ start_date: datePicker.value })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to reset start date');
+            }
+
+            const data = await response.json();
+            
+            // Update the skill and practice sessions
+            skill.start_date = data.skill.start_date;
+            practiceSessions = data.practice_sessions;
+
+            // Update the calendar
+            updateCalendar(calendarWidget, skill.start_date, skill.pattern, practiceSessions);
+
+            // Hide the reset form
+            resetForm.style.display = 'none';
+
+        } catch (error) {
+            console.error('Error resetting start date:', error);
+            alert('Failed to reset start date. Please try again.');
+        }
+    });
+
     // Create delete button
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'delete-btn';
@@ -245,6 +321,9 @@ function createSkillElement(skill, practiceSessions) {
         // Do nothing - calendar is always shown
     });
 
+    buttonContainer.appendChild(resetContainer);
+    buttonContainer.appendChild(deleteBtn);
+
     // Append elements
     skillHeader.appendChild(skillNameSection);
     skillHeader.appendChild(patternContainer);
@@ -252,9 +331,6 @@ function createSkillElement(skill, practiceSessions) {
     skillInfo.appendChild(scheduleSpan);
     skillInfo.appendChild(calendarWidget);
 
-    const buttonContainer = document.createElement('div');
-    buttonContainer.className = 'button-container';
-    buttonContainer.appendChild(deleteBtn);
     skillInfo.appendChild(buttonContainer);
 
     // Add elements to skill item

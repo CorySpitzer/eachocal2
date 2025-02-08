@@ -74,6 +74,33 @@ module Api
       head :no_content
     end
 
+    def reset_start_date
+      @skill = Skill.find(params[:id])
+      new_start_date = Date.parse(params[:start_date])
+
+      # Start a transaction to ensure all updates happen together
+      ActiveRecord::Base.transaction do
+        # Update skill's start date
+        @skill.update!(start_date: new_start_date)
+
+        # Delete all existing practice sessions
+        @skill.practice_sessions.destroy_all
+
+        # Generate new practice sessions based on the pattern
+        dates = generate_practice_dates(new_start_date, @skill.pattern)
+        dates.each do |date|
+          @skill.practice_sessions.create!(scheduled_date: date)
+        end
+      end
+
+      render json: { 
+        skill: @skill,
+        practice_sessions: @skill.practice_sessions.order(:scheduled_date)
+      }
+    rescue => e
+      render json: { error: e.message }, status: :unprocessable_entity
+    end
+
     private
 
     def skill_params

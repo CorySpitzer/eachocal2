@@ -19,6 +19,10 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :skills do
+      member do
+        post 'rate'
+        post 'reset_start_date'
+      end
       resources :practice_sessions, only: [:create]
     end
     post '/practice_sessions/:id/rate', to: 'practice_sessions#rate'
