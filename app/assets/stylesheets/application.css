@@ -570,6 +570,47 @@ button:hover {
     background-color: #218838;
 }
 
+.practice-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--bs-primary);
+    display: inline-block;
+    margin: 2px;
+    cursor: pointer;
+}
+
+.practice-marker.completed {
+    border: 3px solid var(--bs-primary);
+}
+
+.practice-marker.completed[data-rating="1"] {
+    background-color: #ff4444;
+}
+
+.practice-marker.completed[data-rating="2"] {
+    background-color: #ff8c44;
+}
+
+.practice-marker.completed[data-rating="3"] {
+    background-color: #ffcd44;
+}
+
+.practice-marker.completed[data-rating="4"] {
+    background-color: #88c944;
+}
+
+.practice-marker.completed[data-rating="5"] {
+    background-color: #4CAF50;
+}
+
+.practice-markers {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 4px;
+}
+
 @media (max-width: 768px) {
     .hamburger-menu {
         display: block;
