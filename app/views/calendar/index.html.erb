@@ -50,17 +50,23 @@
                     session = skill[:practice_sessions].find { |s| s.scheduled_date == date.to_date }
                     rating = session&.rating
                     completed = rating.present?
+                    color = case rating
+                           when 5 then "#2ecc71" # Green
+                           when 4 then "#87d37c" # Yellow-Green
+                           when 3 then "#f1c40f" # Yellow
+                           when 2 then "#e67e22" # Orange
+                           when 1 then "#e74c3c" # Red
+                           end
                   %>
                   <% if session %>
                     <div class="skill-item <%= completed ? 'rated' : 'scheduled' %>" 
-                         data-color="<%= skill[:color] %>"
                          data-session-id="<%= session.id %>"
                          data-rating="<%= rating || 0 %>"
                          data-bs-toggle="tooltip"
                          title="<%= completed ? "Completed: #{skill[:name]} (#{rating} stars)" : "Scheduled: #{skill[:name]}" %>">
                       <div class="skill-content">
                         <span class="skill-name <%= 'rated' if completed %>" 
-                              style="<%= completed ? "color: #{skill[:color]}; opacity: #{0.4 + rating * 0.12}" : '' %>">
+                              style="<%= completed ? "color: #{color}" : '' %>">
                           <%= skill[:name] %>
                         </span>
                       </div>
@@ -70,17 +76,6 @@
               </div>
             </div>
             <% date = date.next_day %>
-          <% end %>
-        </div>
-        <div class="calendar-legend">
-          <% @calendar_data.each do |skill| %>
-            <div class="skill-legend-item">
-              <div class="legend-markers">
-                <div class="legend-marker completed" data-color="<%= skill[:color] %>"></div>
-                <div class="legend-marker scheduled" data-color="<%= skill[:color] %>"></div>
-              </div>
-              <div class="legend-name"><%= skill[:name] %></div>
-            </div>
           <% end %>
         </div>
       </div>

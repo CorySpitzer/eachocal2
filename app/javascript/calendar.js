@@ -100,6 +100,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const calendar = document.querySelector('.calendar-grid');
     if (!calendar) return;
 
+    const ratingColors = {
+        5: "#2ecc71", // Green
+        4: "#87d37c", // Yellow-Green
+        3: "#f1c40f", // Yellow
+        2: "#e67e22", // Orange
+        1: "#e74c3c"  // Red
+    };
+
     // Handle clicks on skill items
     calendar.addEventListener('click', (event) => {
         const skillItem = event.target.closest('.skill-item');
@@ -120,12 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
             skillItem.dataset.rating = newRating;
             
             const skillName = skillItem.querySelector('.skill-name');
-            const color = skillItem.dataset.color;
             
-            // Update color and style
+            // Update color based on rating
             skillName.classList.add('rated');
-            skillName.style.color = color;
-            skillName.style.opacity = (0.4 + (newRating * 0.12)).toString();
+            skillName.style.color = ratingColors[newRating] || '';
             
             // Update tooltip
             const skillNameText = skillName.textContent.trim();
