@@ -44,28 +44,33 @@
           <% while date <= @end_date do %>
             <div class="calendar-day <%= 'other-month' if date.month != @current_date.month %>">
               <div class="day-number"><%= date.day %></div>
-              <div class="practice-markers">
-              <% @calendar_data.each do |skill| %>
-                <% if skill[:completed_sessions].include?(date.to_date) %>
-                  <% session = skill[:practice_sessions].find { |s| s.scheduled_date == date.to_date } %>
-                  <div class="practice-marker completed" 
-                       data-color="<%= skill[:color] %>"
-                       data-session-id="<%= session.id %>"
-                       data-rating="<%= session.rating %>"
-                       data-bs-toggle="tooltip"
-                       style="opacity: <%= 0.2 + (session.rating || 0) * 0.16 %>;"
-                       title="Completed: <%= skill[:name] %> (<%= '★' * session.rating %>)"></div>
+              <div class="skills-list">
+                <% @calendar_data.each do |skill| %>
+                  <% if skill[:completed_sessions].include?(date.to_date) %>
+                    <% session = skill[:practice_sessions].find { |s| s.scheduled_date == date.to_date } %>
+                    <div class="skill-item" 
+                         data-color="<%= skill[:color] %>"
+                         data-session-id="<%= session.id %>"
+                         data-bs-toggle="tooltip"
+                         title="<%= skill[:name] %> (<%= '★' * session.rating %>)">
+                      <span class="skill-name" style="color: <%= skill[:color] %>;">
+                        <%= skill[:name] %> <%= '★' * session.rating %>
+                      </span>
+                    </div>
+                  <% end %>
+                  <% if skill[:scheduled_sessions].include?(date.to_date) %>
+                    <% session = skill[:practice_sessions].find { |s| s.scheduled_date == date.to_date } %>
+                    <div class="skill-item scheduled" 
+                         data-color="<%= skill[:color] %>"
+                         data-session-id="<%= session.id %>"
+                         data-bs-toggle="tooltip"
+                         title="Scheduled: <%= skill[:name] %>">
+                      <span class="skill-name">
+                        <%= skill[:name] %>
+                      </span>
+                    </div>
+                  <% end %>
                 <% end %>
-                <% if skill[:scheduled_sessions].include?(date.to_date) %>
-                  <% session = skill[:practice_sessions].find { |s| s.scheduled_date == date.to_date } %>
-                  <div class="practice-marker scheduled" 
-                       data-color="<%= skill[:color] %>"
-                       data-session-id="<%= session.id %>"
-                       data-rating="0"
-                       data-bs-toggle="tooltip"
-                       title="Scheduled: <%= skill[:name] %>"></div>
-                <% end %>
-              <% end %>
               </div>
             </div>
             <% date = date.next_day %>
