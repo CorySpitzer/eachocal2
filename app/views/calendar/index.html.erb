@@ -3,6 +3,7 @@
     <div class="col-md-12">
       <div class="calendar-container" data-controller="calendar skill-colors">
         <%= javascript_include_tag "calendar" %>
+        <%= stylesheet_link_tag "calendar" %>
         <div class="calendar-header">
           <div class="calendar-nav">
             <%= link_to calendar_path(year: @prev_month.year, month: @prev_month.month),
@@ -10,7 +11,7 @@
                         data: { turbo_frame: "calendar" } do %>
               <i class="bi bi-chevron-left"></i>
             <% end %>
-            <h2 class="calendar-title"><%= @current_date.strftime("%B %Y") %></h2>
+            <span class="calendar-title"><%= @current_date.strftime("%B %Y") %></span>
             <%= link_to calendar_path(year: @next_month.year, month: @next_month.month),
                         class: "nav-btn",
                         data: { turbo_frame: "calendar" } do %>

@@ -12,11 +12,20 @@
   margin-bottom: 30px;
 }
 
-.calendar-header h2 {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #333;
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.calendar-container .calendar-nav .calendar-title {
+  font-size: 28px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
   margin: 0;
+  display: inline-block;
 }
 
 .calendar-grid {
