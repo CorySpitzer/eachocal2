@@ -84,53 +84,6 @@
   </div>
 </div>
 
-<div class="container mt-4">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="skills-selector mb-4" data-controller="subject-skills">
-        <div class="row g-3">
-          <div class="col-md-4">
-            <label for="subject_id" class="form-label">Subject</label>
-            <%= select_tag :subject_id, 
-                options_from_collection_for_select(
-                  @subjects || [], 
-                  :id, 
-                  :name, 
-                  @selected_subject&.id
-                ),
-                { 
-                  prompt: "Select a subject",
-                  class: "form-select",
-                  data: { 
-                    subject_skills_target: "subjectSelect",
-                    action: "change->subject-skills#updateSkillsDropdown",
-                    skills: (@subjects || []).map { |s| { id: s.id, name: s.name, skills: s.skills.map { |skill| { id: skill.id, name: skill.name } } } }.to_json
-                  }
-                } %>
-          </div>
-          
-          <div class="col-md-4">
-            <label for="skill_id" class="form-label">Skill</label>
-            <%= select_tag :skill_id,
-                options_for_select([["Select a skill", ""]]),
-                class: "form-select",
-                data: { subject_skills_target: "skillSelect" } %>
-          </div>
-          
-          <div class="col-md-4 d-flex align-items-end">
-            <% if @selected_subject %>
-              <%= link_to "Add New Skill", 
-                  new_subject_skill_path(@selected_subject),
-                  class: "btn btn-outline-primary",
-                  data: { subject_skills_target: "newSkillLink" } %>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <% content_for :scripts do %>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
