@@ -114,16 +114,33 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 
+.skill-content {
+  display: flex;
+  align-items: center;
+  min-height: 1.5em;
+}
+
 .skill-name {
+  flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
 }
 
-.skill-item.scheduled .skill-name {
+.skill-name.rated {
+  font-weight: bold;
+}
+
+.skill-item.scheduled .skill-content {
   color: #666;
   font-style: italic;
+}
+
+.skill-stars {
+  flex-shrink: 0;
+  letter-spacing: -1px;
+  font-size: 1em;
+  line-height: 1;
 }
 
 .skill-legend {
@@ -203,6 +220,44 @@
 .legend-name {
   font-size: 0.95rem;
   color: #555;
+}
+
+.floating-rating {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.date-rating {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 4px;
+}
+
+.rating-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.rating-buttons button {
+  flex: 1;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-rating-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.cancel-rating-btn {
+  background-color: #f0f0f0;
+  color: #666;
 }
 
 @media (max-width: 768px) {

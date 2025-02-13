@@ -100,43 +100,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const calendar = document.querySelector('.calendar-grid');
     if (!calendar) return;
 
-    // Handle clicks on practice markers
+    // Handle clicks on skill items
     calendar.addEventListener('click', (event) => {
-        const marker = event.target.closest('.practice-marker');
-        if (!marker) return;
+        const skillItem = event.target.closest('.skill-item');
+        if (!skillItem) return;
 
         // Remove any existing rating dropdowns
         document.querySelectorAll('.floating-rating').forEach(el => el.remove());
 
-        // Get session data from the marker's data attributes
-        const sessionId = marker.dataset.sessionId;
-        const rating = parseInt(marker.dataset.rating) || 0;
+        // Get session data from the skill item's data attributes
+        const sessionId = skillItem.dataset.sessionId;
+        const rating = parseInt(skillItem.dataset.rating) || 0;
 
         // Create and position the rating dropdown
         const session = { id: sessionId, rating };
         const ratingDropdown = createRatingDropdown(session, (newRating) => {
-            // Update marker appearance after rating
-            marker.classList.remove('scheduled');
-            marker.classList.add('completed');
-            marker.dataset.rating = newRating;
-            marker.style.opacity = (0.2 + (newRating * 0.16)).toString();
+            // Update skill item appearance after rating
+            skillItem.classList.remove('scheduled');
+            skillItem.dataset.rating = newRating;
+            
+            const skillName = skillItem.querySelector('.skill-name');
+            const color = skillItem.dataset.color;
+            
+            // Update color and style
+            skillName.classList.add('rated');
+            skillName.style.color = color;
+            skillName.style.opacity = (0.4 + (newRating * 0.12)).toString();
             
             // Update tooltip
-            const skillName = marker.title.split(':')[1].split('(')[0].trim();
-            marker.title = `Completed: ${skillName} (${'★'.repeat(newRating)})`;
+            const skillNameText = skillName.textContent.trim();
+            skillItem.title = `Completed: ${skillNameText} (${newRating} stars)`;
         });
 
-        // Position the dropdown relative to the marker
-        const markerRect = marker.getBoundingClientRect();
+        // Position the dropdown relative to the skill item
+        const itemRect = skillItem.getBoundingClientRect();
         ratingDropdown.style.position = 'absolute';
-        ratingDropdown.style.bottom = '100%';
-        ratingDropdown.style.left = '50%';
-        ratingDropdown.style.transform = 'translateX(-50%)';  // Center it horizontally
+        ratingDropdown.style.top = `${itemRect.bottom + window.scrollY}px`;
+        ratingDropdown.style.left = `${itemRect.left + window.scrollX}px`;
         ratingDropdown.style.backgroundColor = 'white';
         ratingDropdown.style.zIndex = '1000';
         
-        // Add it to the marker's parent for proper positioning
-        marker.parentElement.appendChild(ratingDropdown);
+        // Add it to the body for proper positioning
+        document.body.appendChild(ratingDropdown);
         event.stopPropagation();
     });
 });

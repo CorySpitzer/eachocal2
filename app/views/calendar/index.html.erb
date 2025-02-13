@@ -46,28 +46,24 @@
               <div class="day-number"><%= date.day %></div>
               <div class="skills-list">
                 <% @calendar_data.each do |skill| %>
-                  <% if skill[:completed_sessions].include?(date.to_date) %>
-                    <% session = skill[:practice_sessions].find { |s| s.scheduled_date == date.to_date } %>
-                    <div class="skill-item" 
+                  <% 
+                    session = skill[:practice_sessions].find { |s| s.scheduled_date == date.to_date }
+                    rating = session&.rating
+                    completed = rating.present?
+                  %>
+                  <% if session %>
+                    <div class="skill-item <%= completed ? 'rated' : 'scheduled' %>" 
                          data-color="<%= skill[:color] %>"
                          data-session-id="<%= session.id %>"
+                         data-rating="<%= rating || 0 %>"
                          data-bs-toggle="tooltip"
-                         title="<%= skill[:name] %> (<%= '★' * session.rating %>)">
-                      <span class="skill-name" style="color: <%= skill[:color] %>;">
-                        <%= skill[:name] %> <%= '★' * session.rating %>
-                      </span>
-                    </div>
-                  <% end %>
-                  <% if skill[:scheduled_sessions].include?(date.to_date) %>
-                    <% session = skill[:practice_sessions].find { |s| s.scheduled_date == date.to_date } %>
-                    <div class="skill-item scheduled" 
-                         data-color="<%= skill[:color] %>"
-                         data-session-id="<%= session.id %>"
-                         data-bs-toggle="tooltip"
-                         title="Scheduled: <%= skill[:name] %>">
-                      <span class="skill-name">
-                        <%= skill[:name] %>
-                      </span>
+                         title="<%= completed ? "Completed: #{skill[:name]} (#{rating} stars)" : "Scheduled: #{skill[:name]}" %>">
+                      <div class="skill-content">
+                        <span class="skill-name <%= 'rated' if completed %>" 
+                              style="<%= completed ? "color: #{skill[:color]}; opacity: #{0.4 + rating * 0.12}" : '' %>">
+                          <%= skill[:name] %>
+                        </span>
+                      </div>
                     </div>
                   <% end %>
                 <% end %>
@@ -112,7 +108,7 @@
                   data: { 
                     subject_skills_target: "subjectSelect",
                     action: "change->subject-skills#updateSkillsDropdown",
-                    skills: (@subjects || []).map { |s| { id: s.id, name: s.name, skills: s.skills.map { |skill| { id: skill.id, name: skill.name } } }.to_json }
+                    skills: (@subjects || []).map { |s| { id: s.id, name: s.name, skills: s.skills.map { |skill| { id: skill.id, name: skill.name } } } }.to_json
                   }
                 } %>
           </div>
