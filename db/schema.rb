@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_06_165623) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_14_151753) do
   create_table "practice_sessions", force: :cascade do |t|
     t.integer "skill_id", null: false
     t.date "scheduled_date"
@@ -28,6 +28,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_165623) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.boolean "base_skill", default: false, null: false
+    t.integer "rating"
     t.index ["base_skill"], name: "index_skills_on_base_skill"
     t.index ["user_id"], name: "index_skills_on_user_id"
   end

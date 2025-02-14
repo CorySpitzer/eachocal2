@@ -6,6 +6,7 @@ class Skill < ApplicationRecord
   validates :name, presence: true
   validates :pattern, presence: true, if: -> { !base_skill }
   validates :start_date, presence: true, if: -> { !base_skill }
+  validates :rating, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 5 }, allow_nil: true
 
   scope :base_skills, -> { where(base_skill: true) }
   scope :user_skills, -> { where.not(base_skill: true) }
