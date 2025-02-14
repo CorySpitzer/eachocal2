@@ -615,6 +615,15 @@ button:hover {
     background-color: #4CAF50;
 }
 
+/* Custom tooltip styles */
+.tooltip {
+  font-size: 0.75rem;
+}
+
+.tooltip .tooltip-inner {
+  padding: 0.25rem 0.5rem;
+}
+
 @media (max-width: 768px) {
     .hamburger-menu {
         display: block;
