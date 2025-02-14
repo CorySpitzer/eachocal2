@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <div class="calendar-container" data-controller="calendar skill-colors">
+      <div class="calendar-container" data-controller="calendar skill-colors skill-rating">
         <%= javascript_include_tag "calendar" %>
         <%= stylesheet_link_tag "calendar" %>
         <div class="calendar-header">
@@ -61,14 +61,23 @@
                   %>
                   <% if session %>
                     <div class="skill-item <%= completed ? 'rated' : 'scheduled' %>" 
+                         data-skill-id="<%= skill[:id] %>"
                          data-session-id="<%= session.id %>"
-                         data-rating="<%= rating || 0 %>"
+                         data-rating="<%= skill[:rating] || 0 %>"
                          data-bs-toggle="tooltip"
+                         data-action="click->skill-rating#updateRating"
                          title="<%= completed ? "Completed: #{skill[:name]} (#{rating} stars)" : "Scheduled: #{skill[:name]}" %>">
                       <div class="skill-content">
                         <span class="skill-name <%= 'rated' if completed %>" 
                               style="<%= completed ? "color: #{color}" : '' %>">
                           <%= skill[:name] %>
+                          <% if skill[:rating].present? && skill[:rating] > 0 %>
+                            <span class="skill-rating">
+                              <% skill[:rating].times do %>
+                                <i class="bi bi-star-fill text-warning"></i>
+                              <% end %>
+                            </span>
+                          <% end %>
                         </span>
                       </div>
                     </div>

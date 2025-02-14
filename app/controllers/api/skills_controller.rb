@@ -104,7 +104,7 @@ module Api
     private
 
     def skill_params
-      params.require(:skill).permit(:name, :pattern, :start_date, subject_ids: [])
+      params.require(:skill).permit(:name, :pattern, :start_date, :rating, subject_ids: [])
     end
 
     def generate_practice_dates(start_date, pattern_name)

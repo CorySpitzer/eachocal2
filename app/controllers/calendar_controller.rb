@@ -33,6 +33,7 @@ class CalendarController < ApplicationController
       {
         id: skill.id,
         name: skill.name,
+        rating: skill.rating,
         color: generate_color(index),
         # Sessions with ratings are completed
         completed_sessions: practice_sessions

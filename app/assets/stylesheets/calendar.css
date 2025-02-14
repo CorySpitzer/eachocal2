@@ -152,6 +152,18 @@
   line-height: 1;
 }
 
+.skill-rating {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 0.8em;
+  vertical-align: middle;
+}
+
+.skill-rating i {
+  margin-right: 1px;
+  font-size: 10px;
+}
+
 .skill-legend {
   margin-top: 30px;
   padding: 20px;
