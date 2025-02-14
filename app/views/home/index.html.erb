@@ -39,7 +39,8 @@
                   options_from_collection_for_select(@base_skills, :id, :name),
                   { 
                     prompt: "Select a Skill to Add",
-                    class: "form-select mb-2"
+                    class: "form-select mb-2",
+                    data: { subject_skills_target: "skillSelect" }
                   } %>
               <label for="newSkillInput" class="form-label">Or Enter Custom Skill</label>
               <input type="text" 

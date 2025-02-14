@@ -1,5 +1,5 @@
-// Current reference time (2025-01-05)
-const REFERENCE_TIME = new Date('2025-01-05T09:54:30-05:00');
+// Current reference time (current time)
+const REFERENCE_TIME = new Date();
 
 // Spaced repetition patterns (in days)
 const PATTERNS = {
@@ -22,7 +22,14 @@ function initializePage() {
     const addSkillBtn = document.getElementById('addSkillBtn');
     if (addSkillBtn) {  // Only set up if we're on the home page
         addSkillBtn.addEventListener('click', addSkill);
-        document.getElementById('startDate').valueAsDate = new Date(REFERENCE_TIME);
+        const dateInput = document.getElementById('startDate');
+        if (dateInput) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            dateInput.value = `${year}-${month}-${day}`;
+        }
         loadExistingSkills();
     }
 }
@@ -234,7 +241,7 @@ function createSkillElement(skill, practiceSessions) {
     const datePicker = document.createElement('input');
     datePicker.type = 'date';
     datePicker.className = 'reset-date-picker';
-    datePicker.value = new Date().toISOString().split('T')[0];
+    datePicker.value = new Date('2025-02-14T11:15:35-05:00').toISOString().split('T')[0];
 
     const saveResetBtn = document.createElement('button');
     saveResetBtn.className = 'save-reset-btn';
@@ -496,7 +503,7 @@ function updateCalendar(calendarWidget, startDate, patternName, practiceSessions
         monthsContainer.appendChild(generateMonthCalendar(
             currentMonth,
             studyDates,
-            new Date(REFERENCE_TIME),
+            new Date(), // Use current date
             practiceSessions
         ));
         currentMonth.setMonth(currentMonth.getMonth() + 1);
