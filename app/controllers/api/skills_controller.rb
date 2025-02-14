@@ -26,7 +26,7 @@ module Api
 
       if @skill.save
         # Create practice sessions for each date in the pattern
-        dates = generate_practice_dates(@skill.start_date, @skill.pattern)
+        dates = generate_practice_dates(@skill.start_date.to_date, @skill.pattern)
         dates.each do |date|
           @skill.practice_sessions.create!(scheduled_date: date)
         end
@@ -53,7 +53,7 @@ module Api
           @skill.practice_sessions.destroy_all
           
           # Create new practice sessions for the new pattern
-          dates = generate_practice_dates(@skill.start_date, @skill.pattern)
+          dates = generate_practice_dates(@skill.start_date.to_date, @skill.pattern)
           dates.each do |date|
             @skill.practice_sessions.create!(scheduled_date: date)
           end
@@ -138,7 +138,7 @@ module Api
         early + later
       end
 
-      pattern.map { |days| start_date + days.days }
+      pattern.map { |days| start_date.to_date + days.days }
     end
   end
 end
