@@ -137,3 +137,17 @@ algebra_skills.each do |topic, skills|
 end
 
 puts "Created #{Skill.base_skills.count} base skills for Algebra"
+
+# Create Test1 and Test2 subjects with test-skill1
+test1 = Subject.find_or_create_by!(name: 'Test1', user: user)
+test2 = Subject.find_or_create_by!(name: 'Test2', user: user)
+
+# Add test-skill1 to both subjects
+['Test1', 'Test2'].each do |subject_name|
+  subject = Subject.find_by!(name: subject_name)
+  skill = Skill.find_or_create_by!(name: 'test-skill1', user: user) do |s|
+    s.pattern = 'daily'  # Adding required fields
+    s.start_date = Date.today
+  end
+  subject.skills << skill unless subject.skills.include?(skill)
+end
