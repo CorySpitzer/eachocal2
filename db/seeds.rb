@@ -133,6 +133,8 @@ algebra_skills.each do |topic, skills|
     skill = Skill.find_or_create_by!(name: skill_name) do |s|
       s.base_skill = true
     end
+    # Associate the skill with the Algebra subject
+    algebra.skills << skill unless algebra.skills.include?(skill)
   end
 end
 

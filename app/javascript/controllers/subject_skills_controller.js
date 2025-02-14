@@ -24,13 +24,12 @@ export default class extends Controller {
       return
     }
 
-    // Get the skills data from the data attribute
-    const subjectsData = JSON.parse(this.subjectSelectTarget.dataset.skills)
+    // Get the subjects data from the data attribute
+    const subjectsData = JSON.parse(this.subjectSelectTarget.dataset.subjects)
     const selectedSubject = subjectsData.find(subject => subject.id === parseInt(subjectId))
 
-    if (selectedSubject) {
-      const skills = JSON.parse(selectedSubject.skills)
-      skills.forEach(skill => {
+    if (selectedSubject && selectedSubject.skills) {
+      selectedSubject.skills.forEach(skill => {
         const option = document.createElement('option')
         option.value = skill.id
         option.textContent = skill.name
