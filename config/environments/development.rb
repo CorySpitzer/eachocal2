@@ -67,8 +67,8 @@ Rails.application.configure do
 
   # https://stackoverflow.com/questions/32629811/how-assets-precompile-in-development-environment-on-ruby-on-rails
   # Don't precompile assets in development
-  config.assets.debug = true
-  config.assets.precompile = false
+  # config.assets.debug = true
+  # config.assets.precompile = false
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
