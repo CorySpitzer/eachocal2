@@ -4,9 +4,44 @@ export default class extends Controller {
   static targets = ["skillItem"]
 
   connect() {
-    // Initialize Bootstrap tooltips
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    // Add mouseover listeners for tooltips
+    this.element.querySelectorAll('.skill-item[title]').forEach(el => {
+      el.addEventListener('mouseover', (e) => this.showTooltip(e))
+      el.addEventListener('mouseout', (e) => this.hideTooltip(e))
+    })
+  }
+
+  showTooltip(event) {
+    const el = event.currentTarget
+    const title = el.getAttribute('title')
+    if (!title) return
+
+    // Create tooltip element
+    const tooltip = document.createElement('div')
+    tooltip.className = 'custom-tooltip'
+    tooltip.textContent = title
+    document.body.appendChild(tooltip)
+
+    // Position tooltip
+    const rect = el.getBoundingClientRect()
+    tooltip.style.left = rect.right + 8 + 'px'
+    tooltip.style.top = rect.top + (rect.height / 2) - (tooltip.offsetHeight / 2) + 'px'
+
+    // Store tooltip reference
+    el.tooltip = tooltip
+    // Clear title to prevent native tooltip
+    el.setAttribute('data-title', title)
+    el.removeAttribute('title')
+  }
+
+  hideTooltip(event) {
+    const el = event.currentTarget
+    if (el.tooltip) {
+      el.tooltip.remove()
+      // Restore title
+      el.setAttribute('title', el.getAttribute('data-title'))
+      el.removeAttribute('data-title')
+    }
   }
 
   async updateRating(event) {
@@ -42,14 +77,9 @@ export default class extends Controller {
         const ratingSpan = skillItem.querySelector('.skill-rating')
         ratingSpan.innerHTML = Array(rating).fill('<i class="bi bi-star-fill text-warning"></i>').join('')
         
-        // Update the tooltip
-        const tooltip = bootstrap.Tooltip.getInstance(skillItem)
-        if (tooltip) {
-          const skillName = skillItem.querySelector('.skill-name').textContent.trim()
-          skillItem.setAttribute('title', `${skillName} (${rating} stars)`)
-          tooltip.dispose()
-          new bootstrap.Tooltip(skillItem)
-        }
+        // Update the tooltip title
+        const skillName = skillItem.querySelector('.skill-name').textContent.trim()
+        skillItem.setAttribute('title', `${skillName} (${rating} stars)`)
         
         // Update the data attribute
         skillItem.dataset.rating = rating.toString()

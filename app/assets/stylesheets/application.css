@@ -616,6 +616,19 @@ button:hover {
 }
 
 /* Custom tooltip styles */
+.custom-tooltip {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 1000;
+  max-width: 200px;
+  white-space: nowrap;
+}
+
 .tooltip {
   font-size: 0.75rem;
 }

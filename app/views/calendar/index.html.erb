@@ -64,7 +64,6 @@
                          data-skill-id="<%= skill[:id] %>"
                          data-session-id="<%= session.id %>"
                          data-rating="<%= skill[:rating] || 0 %>"
-                         data-bs-toggle="tooltip"
                          data-action="click->skill-rating#updateRating"
                          title="<%= completed ? "Completed: #{skill[:name]} (#{rating} stars)" : "Scheduled: #{skill[:name]}" %>">
                       <div class="skill-content">
