@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container mt-4" data-controller="skill-rating">
   <div class="calendar-nav mb-4">
     <%= link_to today_path(date: @prev_date), class: "nav-btn" do %>
       <i class="bi bi-chevron-left"></i>
@@ -21,18 +21,41 @@
   <% if @today_skills.any? %>
     <div class="list-group">
       <% @today_skills.each do |skill| %>
-        <div class="list-group-item">
+        <% 
+          practice_session = skill.practice_sessions.find_by(scheduled_date: @current_date)
+          rating = practice_session&.rating
+          completed = rating.present?
+          color = case rating
+                 when 5 then "#2ecc71" # Green
+                 when 4 then "#87d37c" # Yellow-Green
+                 when 3 then "#f1c40f" # Yellow
+                 when 2 then "#e67e22" # Orange
+                 when 1 then "#e74c3c" # Red
+                 end
+        %>
+        <div class="list-group-item skill-item <%= completed ? 'rated' : 'scheduled' %>"
+             data-skill-id="<%= skill.id %>"
+             data-session-id="<%= practice_session&.id %>"
+             data-rating="<%= rating || 0 %>"
+             data-action="click->skill-rating#updateRating"
+             title="<%= completed ? "Completed: #{skill.name} (#{rating} stars)" : "Click to rate: #{skill.name}" %>">
           <div class="d-flex justify-content-between align-items-center">
             <div>
-              <h5 class="mb-1"><%= skill.name %></h5>
+              <h5 class="mb-1 skill-name <%= 'rated' if completed %>" style="<%= "color: #{color}" if completed %>">
+                <%= skill.name %>
+              </h5>
               <% if skill.subjects.any? %>
                 <small class="text-muted"><%= skill.subjects.map(&:name).join(", ") %></small>
               <% else %>
                 <small class="text-muted">No subjects assigned</small>
               <% end %>
             </div>
-            <% if skill.rating %>
-              <span class="badge bg-primary rounded-pill">Rating: <%= skill.rating %></span>
+            <% if rating %>
+              <div class="skill-rating">
+                <% rating.times do %>
+                  <i class="bi bi-star-fill text-warning"></i>
+                <% end %>
+              </div>
             <% end %>
           </div>
         </div>
@@ -79,5 +102,62 @@
       padding: 0 0.5rem;
       color: #212529;
     }
+
+    .skill-item {
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .skill-item:hover {
+      background-color: #f8f9fa;
+    }
+
+    .skill-item.rated .skill-name {
+      font-weight: 500;
+    }
+
+    .floating-rating {
+      padding: 1rem;
+      border: 1px solid #dee2e6;
+      border-radius: 0.375rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .rating-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .date-rating {
+      width: 100%;
+      padding: 0.375rem;
+      border: 1px solid #dee2e6;
+      border-radius: 0.25rem;
+    }
+
+    .save-rating-btn, .cancel-rating-btn {
+      padding: 0.375rem 0.75rem;
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+    }
+
+    .save-rating-btn {
+      background-color: #0d6efd;
+      color: white;
+    }
+
+    .cancel-rating-btn {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .skill-rating {
+      display: flex;
+      gap: 0.25rem;
+    }
   </style>
 <% end %>
+
+<%= javascript_include_tag "calendar" %>
