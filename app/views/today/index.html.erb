@@ -1,5 +1,24 @@
 <div class="container mt-4">
-  <h1 class="mb-4">Today's Practice Agenda</h1>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <%= link_to today_path(date: @prev_date), class: "btn btn-outline-primary" do %>
+      <i class="bi bi-chevron-left"></i>
+    <% end %>
+    
+    <h1 class="mb-0">One Day Agenda</h1>
+    
+    <%= link_to today_path(date: @next_date), class: "btn btn-outline-primary" do %>
+      <i class="bi bi-chevron-right"></i>
+    <% end %>
+  </div>
+
+  <div class="text-center mb-4">
+    <h4 class="text-muted">
+      <%= @current_date.strftime("%A, %B %d, %Y") %>
+      <% if @current_date == Date.current %>
+        <span class="badge bg-primary ms-2">Today</span>
+      <% end %>
+    </h4>
+  </div>
   
   <% if @today_skills.any? %>
     <div class="list-group">
@@ -23,7 +42,15 @@
     </div>
   <% else %>
     <div class="alert alert-info">
-      <p class="mb-0">No skills scheduled for practice today.</p>
+      <p class="mb-0">No skills scheduled for practice on this date.</p>
     </div>
   <% end %>
 </div>
+
+<% content_for :head do %>
+  <style>
+    .btn-outline-primary {
+      min-width: 40px;
+    }
+  </style>
+<% end %>
