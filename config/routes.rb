@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'today', to: 'today#index', as: :today
+
   namespace :api do
     resources :skills do
       member do

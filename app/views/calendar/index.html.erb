@@ -48,7 +48,7 @@
               <div class="skills-list">
                 <% @calendar_data.each do |skill| %>
                   <% 
-                    session = skill[:practice_sessions].find { |s| s.scheduled_date.to_date == (date + 1.day).to_date }
+                    session = skill[:practice_sessions].find { |s| s.scheduled_date.to_date == date.to_date }
                     rating = session&.rating
                     completed = rating.present?
                     color = case rating

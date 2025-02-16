@@ -38,6 +38,7 @@
             <% if user_signed_in? %>
               <%= link_to "Subjects", subjects_path, class: "nav-link #{current_page?(subjects_path) ? 'active' : ''}" %>
               <%= link_to "Calendar", calendar_path, class: "nav-link #{current_page?(calendar_path) ? 'active' : ''}" %>
+              <%= link_to "Today", today_path, class: "nav-link #{current_page?(today_path) ? 'active' : ''}" %>
             <% end %>
           </div>
           <div class="right-nav">

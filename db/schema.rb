@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_14_151753) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_16_152701) do
+  create_table "practice_schedules", force: :cascade do |t|
+    t.integer "skill_id", null: false
+    t.date "scheduled_date", null: false
+    t.boolean "completed", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["skill_id", "scheduled_date"], name: "index_practice_schedules_on_skill_id_and_scheduled_date"
+    t.index ["skill_id"], name: "index_practice_schedules_on_skill_id"
+  end
+
   create_table "practice_sessions", force: :cascade do |t|
     t.integer "skill_id", null: false
     t.date "scheduled_date"
@@ -63,6 +73,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_14_151753) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "practice_schedules", "skills"
   add_foreign_key "practice_sessions", "skills"
   add_foreign_key "skills", "users"
   add_foreign_key "skills_subjects", "skills"
