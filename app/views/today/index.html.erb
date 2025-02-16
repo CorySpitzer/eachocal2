@@ -1,12 +1,10 @@
 <div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <%= link_to today_path(date: @prev_date), class: "btn btn-outline-primary" do %>
+  <div class="calendar-nav mb-4">
+    <%= link_to today_path(date: @prev_date), class: "nav-btn" do %>
       <i class="bi bi-chevron-left"></i>
     <% end %>
-    
-    <h1 class="mb-0">One Day Agenda</h1>
-    
-    <%= link_to today_path(date: @next_date), class: "btn btn-outline-primary" do %>
+    <h1 class="calendar-title mb-0">One Day Agenda</h1>
+    <%= link_to today_path(date: @next_date), class: "nav-btn" do %>
       <i class="bi bi-chevron-right"></i>
     <% end %>
   </div>
@@ -49,8 +47,37 @@
 
 <% content_for :head do %>
   <style>
-    .btn-outline-primary {
-      min-width: 40px;
+    .calendar-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid #dee2e6;
+      color: #6c757d;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      background-color: #f8f9fa;
+      color: #495057;
+      border-color: #ced4da;
+    }
+
+    .calendar-title {
+      font-size: 1.75rem;
+      margin: 0;
+      padding: 0 0.5rem;
+      color: #212529;
     }
   </style>
 <% end %>
