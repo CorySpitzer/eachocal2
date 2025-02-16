@@ -36,14 +36,19 @@
         <div class="list-group-item skill-item <%= completed ? 'rated' : 'scheduled' %>"
              data-skill-id="<%= skill.id %>"
              data-session-id="<%= practice_session&.id %>"
-             data-rating="<%= rating || 0 %>"
-             data-action="click->skill-rating#updateRating"
-             title="<%= completed ? "Completed: #{skill.name} (#{rating} stars)" : "Click to rate: #{skill.name}" %>">
-          <div class="d-flex justify-content-between align-items-center">
+             data-rating="<%= rating || 0 %>">
+          <div class="d-flex justify-content-between align-items-start">
             <div>
-              <h5 class="mb-1 skill-name <%= 'rated' if completed %>" style="<%= "color: #{color}" if completed %>">
-                <%= skill.name %>
-              </h5>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <h5 class="mb-0 skill-name <%= 'rated' if completed %>" style="<%= "color: #{color}" if completed %>">
+                  <%= skill.name %>
+                </h5>
+                <button class="btn btn-outline-secondary btn-xs rate-skill-btn"
+                        data-action="click->skill-rating#updateRating"
+                        title="<%= completed ? "Update rating" : "Rate this skill" %>">
+                  <i class="bi bi-star<%= rating ? '-fill' : '' %>"></i>
+                </button>
+              </div>
               <% if skill.subjects.any? %>
                 <small class="text-muted"><%= skill.subjects.map(&:name).join(", ") %></small>
               <% else %>
@@ -104,12 +109,7 @@
     }
 
     .skill-item {
-      cursor: pointer;
       transition: background-color 0.2s;
-    }
-
-    .skill-item:hover {
-      background-color: #f8f9fa;
     }
 
     .skill-item.rated .skill-name {
@@ -156,6 +156,26 @@
     .skill-rating {
       display: flex;
       gap: 0.25rem;
+    }
+
+    .btn-xs {
+      padding: 0.1rem 0.4rem;
+      font-size: 0.75rem;
+      line-height: 1.2;
+      border-radius: 0.2rem;
+    }
+
+    .rate-skill-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0;
+    }
+
+    .rate-skill-btn i {
+      font-size: 0.75rem;
     }
   </style>
 <% end %>

@@ -45,7 +45,8 @@ export default class extends Controller {
   }
 
   async updateRating(event) {
-    const skillItem = event.currentTarget
+    const button = event.currentTarget
+    const skillItem = button.closest('.skill-item')
     
     // Remove any existing rating dropdowns
     document.querySelectorAll('.floating-rating').forEach(el => el.remove())
@@ -74,26 +75,26 @@ export default class extends Controller {
       skillName.classList.add('rated')
       skillName.style.color = colors[newRating] || ''
       
-      // Update tooltip
-      const skillNameText = skillName.textContent.trim()
-      skillItem.title = `Completed: ${skillNameText} (${newRating} stars)`
+      // Update button icon
+      button.querySelector('i').className = 'bi bi-star-fill'
+      button.title = 'Update rating'
 
       // Update stars display
-      const ratingDisplay = skillItem.querySelector('.skill-rating')
+      let ratingDisplay = skillItem.querySelector('.skill-rating')
       if (!ratingDisplay) {
-        const newRatingDisplay = document.createElement('div')
-        newRatingDisplay.className = 'skill-rating'
-        skillItem.querySelector('.d-flex').appendChild(newRatingDisplay)
+        ratingDisplay = document.createElement('div')
+        ratingDisplay.className = 'skill-rating'
+        skillItem.querySelector('.d-flex').appendChild(ratingDisplay)
       }
       const stars = Array(newRating).fill('<i class="bi bi-star-fill text-warning"></i>').join('')
-      skillItem.querySelector('.skill-rating').innerHTML = stars
+      ratingDisplay.innerHTML = stars
     })
 
-    // Position the dropdown relative to the skill item
-    const itemRect = skillItem.getBoundingClientRect()
+    // Position the dropdown relative to the button
+    const buttonRect = button.getBoundingClientRect()
     ratingDropdown.style.position = 'absolute'
-    ratingDropdown.style.top = `${itemRect.bottom + window.scrollY}px`
-    ratingDropdown.style.left = `${itemRect.left + window.scrollX}px`
+    ratingDropdown.style.top = `${buttonRect.bottom + window.scrollY + 5}px`
+    ratingDropdown.style.left = `${buttonRect.left + window.scrollX}px`
     ratingDropdown.style.backgroundColor = 'white'
     ratingDropdown.style.zIndex = '1000'
     
