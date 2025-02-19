@@ -45,10 +45,14 @@
                 </h2>
               <% end %>
               <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
-                <h3 class="mb-0 skill-name <%= 'rated' if completed %>" 
-                    style="font-size: 2rem;<%= " color: #{color};" if completed %>">
-                  <%= skill.name %>
-                </h3>
+                <div class="d-flex align-items-center">
+                  <h3 class="mb-0 skill-name <%= 'rated' if completed %>" 
+                      style="font-size: 2rem;<%= " color: #{color};" if completed %>">
+                    <%= skill.name %>
+                  </h3>
+                  <i class="bi bi-check-circle-fill text-success ms-2 completion-check" 
+                     style="font-size: 1.75rem; <%= 'display: none;' unless completed %>"></i>
+                </div>
                 <button class="btn btn-outline-secondary btn-lg flex-shrink-0"
                         style="width: auto;"
                         data-action="click->skill-rating#updateRating"

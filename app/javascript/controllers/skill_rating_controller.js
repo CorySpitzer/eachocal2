@@ -79,6 +79,12 @@ export default class extends Controller {
       skillName.classList.add('rated')
       skillName.style.color = colors[newRating] || ''
       
+      // Show the checkmark
+      const checkmark = skillItem.querySelector('.completion-check')
+      if (checkmark) {
+        checkmark.style.display = 'inline-block'
+      }
+      
       // Update button title
       if (button) {
         button.title = 'Update rating'
