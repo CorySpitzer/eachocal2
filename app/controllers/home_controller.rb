@@ -6,9 +6,6 @@ class HomeController < ApplicationController
     @base_skills = Skill.base_skills.order(:name)
   end
 
-  def how_it_works
-  end
-
   def add_skill
     base_skill = Skill.base_skills.find(params[:base_skill_id])
     subject = current_user.subjects.find(params[:subject_id])

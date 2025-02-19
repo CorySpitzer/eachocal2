@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   end
 
   get 'today', to: 'today#index', as: :today
-  get 'how-it-works', to: 'home#how_it_works', as: :how_it_works
+  get 'how-it-works', to: 'how_it_works#index', as: :how_it_works
 
   namespace :api do
     resources :skills do
