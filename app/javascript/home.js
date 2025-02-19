@@ -454,7 +454,13 @@ function updateScheduleWithSessions(scheduleSpan, practiceSessions) {
 }
 
 function updateSchedule(scheduleSpan, startDate, patternName) {
-    const pattern = PATTERNS[patternName];
+    // Default to 'Classic' if pattern is not found
+    const pattern = PATTERNS[patternName] || PATTERNS['Classic'];
+    if (!pattern) {
+        console.error('No valid pattern found for:', patternName);
+        return;
+    }
+    
     const dates = generateDates(new Date(startDate), pattern);
     
     // Clear previous content
@@ -485,7 +491,13 @@ function updateSchedule(scheduleSpan, startDate, patternName) {
 }
 
 function updateCalendar(calendarWidget, startDate, patternName, practiceSessions) {
-    const pattern = PATTERNS[patternName];
+    // Default to 'Classic' if pattern is not found
+    const pattern = PATTERNS[patternName] || PATTERNS['Classic'];
+    if (!pattern) {
+        console.error('No valid pattern found for:', patternName);
+        return;
+    }
+    
     const studyDates = generateDates(new Date(startDate), pattern);
     const startMonth = new Date(startDate);
     const endMonth = new Date(studyDates[studyDates.length - 1]);
@@ -620,6 +632,11 @@ function generateMonthCalendar(date, studyDates, today, practiceSessions) {
 }
 
 function generateDates(startDate, pattern) {
+    if (!Array.isArray(pattern)) {
+        console.error('Invalid pattern provided to generateDates:', pattern);
+        return [];
+    }
+
     const dates = [];
     let currentDate = new Date(startDate);
     
