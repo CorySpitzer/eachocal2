@@ -1,46 +1,168 @@
 <div class="container mt-4">
-  <h1 class="mb-4">How It Works</h1>
+  <style>
+    .how-it-works-section {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+    }
+    .science-section {
+      font-family: 'Times New Roman', Times, serif;
+    }
+    .summary-section {
+      font-style: italic !important;
+    }
+  </style>
 
-  <div class="row">
-    <div class="col-md-8">
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5 class="card-title">1. Add Skills to Practice</h5>
-          <p class="card-text">
-            Start by adding skills you want to master. Group them by subjects to stay organized.
-          </p>
+  <div class="how-it-works-section">
+    <h1 class="mb-4">How It Works</h1>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">1. Add Skills to Practice</h5>
+            <p class="card-text">
+              Start by adding skills you want to master. Group them by subjects to stay organized.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5 class="card-title">2. Follow Your Schedule</h5>
-          <p class="card-text">
-            Check your One Day Agenda or Calendar to see what to practice each day. 
-            Our spaced repetition system schedules reviews at increasing intervals: today, tomorrow, 2 days later, 4 days later, and so on.
-          </p>
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">2. Follow Your Schedule</h5>
+            <p class="card-text">
+              Check your One Day Agenda or Calendar to see what to practice each day. 
+              Our spaced repetition system schedules reviews at increasing intervals: today, tomorrow, 2 days later, 4 days later, and so on.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5 class="card-title">3. Rate Your Practice</h5>
-          <p class="card-text">
-            After practicing, rate how well you did from 1-5 stars. Your ratings help track progress and adjust future practice intervals.
-          </p>
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">3. Rate Your Practice</h5>
+            <p class="card-text">
+              After practicing, rate how well you did from 1-5 stars. Your ratings help track progress and adjust future practice intervals.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">4. Track Your Progress</h5>
-          <p class="card-text">
-            Watch your skills improve as you consistently practice at the right intervals. The spaced repetition system helps you learn efficiently and remember for the long term.
-          </p>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">4. Track Your Progress</h5>
+            <p class="card-text">
+              Watch your skills improve as you consistently practice at the right intervals. The spaced repetition system helps you learn efficiently and remember for the long term.
+            </p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <h1 class="mb-4">The Science</h1>
+  <hr class="my-5">
+
+  <div class="science-section">
+    <h1 class="mb-4">The Science of Expanded Interval Spaced Repetition (EISR)</h1>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card mb-4">
+          <div class="card-body">
+            <p class="card-text">
+              Research shows that both EISR and constant intervals are better than massed study (Dung, 2013). There are conflicting results on how EISR and constant intervals compare, which might mean that either might be good in different situations. Kang argues EISR is better in the short term and they are about as effective as each other over the long term (2014). However, EISR is more scalable because you have to practice less over time. That said, we're not aware of research over periods greater than 3 months.
+            </p>
+            
+            <p class="card-text">
+              This article does a good job of discussing it: <a href="https://home.cs.colorado.edu/~mozer/Research/Selected%20Publications/reprints/KangLindseyMozerPashler2014.pdf" target="_blank">(Kang, 2014)</a>
+            </p>
+
+            <h5 class="card-title mt-4">Summary of (Kang, 2014) from the Claude LLM</h5>
+            <div class="summary-section">
+              <p class="card-text">
+                The key research question was: Is it better to space review sessions at expanding intervals or equal intervals when learning material over time? While earlier research by Landauer and Bjork (1978) supported expanding intervals, more recent studies had questioned this conclusion.
+              </p>
+
+              <p class="card-text">
+                The researchers identified two key limitations of previous studies:
+              </p>
+              <ul>
+                <li>Most studies confined training to a single session</li>
+                <li>They focused only on final test performance rather than maintaining knowledge throughout the learning period</li>
+              </ul>
+
+              <p class="card-text">
+                To address these limitations, they conducted a 28-day experiment studying Japanese-English vocabulary pairs with 37 participants:
+              </p>
+              <ul>
+                <li>Expanding condition: Practice on Days 1, 3, 9, and 28</li>
+                <li>Equal-interval condition: Practice on Days 1, 10, 19, and 28</li>
+                <li>Final test given 56 days after training (Day 84)</li>
+              </ul>
+
+              <h5 class="card-title mt-4">Key Findings</h5>
+              <ul>
+                <li>Final test performance was similar between conditions (expanding: 49% vs equal-interval: 46%)</li>
+                <li>The expanding condition showed significantly less forgetting between end of training and final test</li>
+                <li>Most importantly, the expanding schedule maintained higher average recall throughout the training period (51% vs 43%)</li>
+              </ul>
+
+              <h5 class="card-title mt-4">Conclusions</h5>
+              <p class="card-text">
+                The researchers conclude that when practice is spread over days or weeks:
+              </p>
+              <ul>
+                <li>Expanding schedules produce better continuous access to the material during training</li>
+                <li>They achieve this without compromising long-term retention</li>
+                <li>This makes expanding schedules potentially more valuable for real-world learning situations where maintaining access to information throughout training is important</li>
+              </ul>
+
+              <p class="card-text mt-4">
+                This research suggests that for long-term learning scenarios (like language learning or job training), expanding practice schedules may be more effective than equal-interval practice, particularly when considering the need to maintain access to the information throughout the learning period.
+              </p>
+            </div>
+
+            <h5 class="card-title mt-4">Notable Quotes from Research</h5>
+            <blockquote class="blockquote">
+              <p class="mb-0">"There is evidence suggesting that this procedure [Expanded Interval Spaced Repetition] may indeed be better than the simple spaced retrieval."</p>
+              <footer class="blockquote-footer">Balota, 2011</footer>
+            </blockquote>
+
+            <blockquote class="blockquote">
+              <p class="mb-0">"It is well established in the memory literature that reviews spaced apart in time enhance long-term retention of material more than do reviews that occur soon after initial study (the spacing effect; see Cepeda, Pashler, Vul, Wixted, & Rohrer, 2006, for a survey), and that reviews are more effective when they involve testing instead of re-presentation (also known as retrieval practice; e.g., Carrier & Pashler, 1992; Kang, McDermott, & Roediger, 2007; see Roediger & Karpicke, 2006, for a review). Spacing and testing can be combined—that is, spaced retrieval practice—in order to obtain the benefits of both."</p>
+              <footer class="blockquote-footer">Kang, 2014</footer>
+            </blockquote>
+
+            <blockquote class="blockquote">
+              <p class="mb-0">"For the learning of foreign vocabulary spread over four weeks, we found that expanding retrieval practice (i.e., sessions separated by increasing numbers of days) produced recall equivalent to that from equal-interval practice on a final test given eight weeks after training. However, the expanding schedule yielded much higher average recallability over the whole training period."</p>
+              <footer class="blockquote-footer">Kang, 2014</footer>
+            </blockquote>
+
+            <blockquote class="blockquote">
+              <p class="mb-0">"On a final test given shortly after practice, an expanding schedule of practice yielded the highest recall (followed by equal-interval, contracting, and massed practice, respectively). On the basis of these results, Landauer and Bjork argued for the superiority of expanding retrieval as a form of spaced practice."</p>
+              <footer class="blockquote-footer">Kang, 2014</footer>
+            </blockquote>
+
+            <blockquote class="blockquote">
+              <p class="mb-0">"Study-phase retrieval theory, on the other hand, focuses on encoding processes—an optimal lag between initial study and review is one that yields effortful but successful study-phase retrieval, which leads to superior re-encoding of the information."</p>
+              <footer class="blockquote-footer">Kang, 2014</footer>
+            </blockquote>
+
+            <blockquote class="blockquote">
+              <p class="mb-0">"when retrieval practice is spread out over days or weeks, scheduling the review sessions in an expanding fashion produces better average performance than does equal-interval spacing over the training period. Expanding practice not only produces faster acquisition and greater access to the material over the training period, it was even observed to slightly retard forgetting over the long term, too."</p>
+              <footer class="blockquote-footer">Kang, 2014</footer>
+            </blockquote>
+
+            <blockquote class="blockquote">
+              <p class="mb-0">"Results show that, for multiplication facts, retention in the expanded series condition was almost twice that in the massed series condition; for spelling lists, a significant difference in the same direction was also obtained. These differences were obtained regardless of the level of ability…"</p>
+              <footer class="blockquote-footer">Rea, 1985</footer>
+            </blockquote>
+
+            <h5 class="card-title mt-4">Citations</h5>
+            <ul class="list-unstyled">
+              <li class="mb-2">Balota, D. A., Duchek, J. M., & Logan, J. M. (2011). Is expanded retrieval practice a superior form of spaced retrieval? A critical review of the extant literature. The foundations of remembering, 83-106.</li>
+              <li class="mb-2">Kang, S. H., Lindsey, R. V., Mozer, M. C., & Pashler, H. (2014). Retrieval practice over the long term: Should spacing be expanding or equal-interval?. Psychonomic bulletin & review, 21, 1544-1550.</li>
+              <li>Rea, C. P., & Modigliani, V. (1985). The effect of expanded versus massed practice on the retention of multiplication facts and spelling lists. Human Learning: Journal of Practical Research & Applications.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
