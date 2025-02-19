@@ -58,10 +58,14 @@ export default class extends Controller {
 
     const ratingDropdown = this.createRatingDropdown(skillItem, session, (newRating) => {
       // Update skill item appearance after rating
+      if (!skillItem) return; // Skip if element no longer exists
+      
       skillItem.classList.remove('scheduled')
+      skillItem.classList.add('rated')
       skillItem.dataset.rating = newRating
       
       const skillName = skillItem.querySelector('.skill-name')
+      if (!skillName) return; // Skip if element no longer exists
       
       // Update color based on rating
       const colors = {
@@ -75,19 +79,25 @@ export default class extends Controller {
       skillName.classList.add('rated')
       skillName.style.color = colors[newRating] || ''
       
-      // Update button icon
-      button.querySelector('i').className = 'bi bi-star-fill'
-      button.title = 'Update rating'
+      // Update button title
+      if (button) {
+        button.title = 'Update rating'
+      }
 
       // Update stars display
       let ratingDisplay = skillItem.querySelector('.skill-rating')
       if (!ratingDisplay) {
         ratingDisplay = document.createElement('div')
         ratingDisplay.className = 'skill-rating'
-        skillItem.querySelector('.d-flex').appendChild(ratingDisplay)
+        const flexContainer = skillItem.querySelector('.d-flex')
+        if (flexContainer) {
+          flexContainer.appendChild(ratingDisplay)
+        }
       }
-      const stars = Array(newRating).fill('<i class="bi bi-star-fill text-warning"></i>').join('')
-      ratingDisplay.innerHTML = stars
+      if (ratingDisplay) {
+        const stars = Array(newRating).fill('<i class="bi bi-star-fill text-warning"></i>').join('')
+        ratingDisplay.innerHTML = stars
+      }
     })
 
     // Position the dropdown relative to the button
@@ -205,11 +215,11 @@ export default class extends Controller {
         }
 
         if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || 'Failed to save rating')
+          const errorText = await response.text()
+          throw new Error(errorText || 'Failed to save rating')
         }
 
-        // Call the onSave callback
+        // Call the onSave callback with the new rating
         if (onSave) {
           onSave(rating)
         }
@@ -218,7 +228,9 @@ export default class extends Controller {
         ratingContainer.remove()
       } catch (error) {
         console.error('Error saving rating:', error)
-        alert('Failed to save rating. Please try again.')
+        if (!error.message.includes('Failed to execute')) {
+          alert('Error saving rating: ' + error.message)
+        }
       }
     })
 
