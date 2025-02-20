@@ -281,6 +281,22 @@
   color: #666;
 }
 
+.reschedule-btn {
+  padding: 0.1rem 0.3rem;
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.reschedule-btn:hover {
+  opacity: 1;
+}
+
+.skill-item:hover .reschedule-btn {
+  opacity: 1;
+}
+
 @media (max-width: 768px) {
   .calendar-container {
     padding: 15px;

@@ -17,6 +17,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :practice_sessions do
+    member do
+      patch :reschedule
+    end
+  end
+
   get 'today', to: 'today#index', as: :today
   get 'how-it-works', to: 'how_it_works#index', as: :how_it_works
 
