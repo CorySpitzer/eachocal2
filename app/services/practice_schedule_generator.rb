@@ -16,15 +16,15 @@ class PracticeScheduleGenerator
     return if skill.start_date > Date.current + days_ahead.days
 
     # Get the date range we're working with
-    start_date = [skill.start_date, Date.current].max
-    end_date = Date.current + days_ahead.days
+    start_date = [skill.start_date.beginning_of_day, Date.current.beginning_of_day].max
+    end_date = Date.current.beginning_of_day + days_ahead.days
 
     # Calculate practice dates based on logarithmic spacing
-    practice_dates = calculate_classic_logn_dates(skill.start_date, start_date, end_date)
+    practice_dates = calculate_classic_logn_dates(skill.start_date.beginning_of_day, start_date, end_date)
 
     # Create practice schedules for each date
     practice_dates.each do |date|
-      skill.practice_schedules.find_or_create_by!(scheduled_date: date)
+      skill.practice_schedules.find_or_create_by!(scheduled_date: date.beginning_of_day)
     end
   end
 
@@ -35,17 +35,27 @@ class PracticeScheduleGenerator
     # Classic spaced repetition intervals: 0, 1, 2, 4, 8, 16, 32...
     intervals = []
     
-    # Add the start date itself (0 days interval)
-    intervals << start_date if start_date >= range_start && start_date <= range_end
+    # Start with 0 days interval (the start date itself)
+    current_interval = 0
     
-    # Add the exponentially increasing intervals
-    interval = 1
-    while interval <= days_since_start
-      practice_date = start_date + interval.days
-      intervals << practice_date if practice_date >= range_start && practice_date <= range_end
-      interval *= 2
+    while current_interval <= days_since_start
+      practice_date = start_date + current_interval.days
+      practice_date = practice_date.beginning_of_day
+      
+      Rails.logger.info "Considering interval #{current_interval} for date #{practice_date}"
+      
+      if practice_date >= range_start && practice_date <= range_end
+        Rails.logger.info "Adding practice date: #{practice_date}"
+        intervals << practice_date
+      end
+      
+      # For the next interval:
+      # If we're at 0, go to 1
+      # Otherwise, double the current interval
+      current_interval = (current_interval == 0) ? 1 : current_interval * 2
     end
 
-    intervals
+    Rails.logger.info "Generated practice dates for #{start_date}: #{intervals.map(&:to_s)}"
+    intervals.sort
   end
 end

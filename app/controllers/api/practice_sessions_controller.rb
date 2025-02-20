@@ -19,9 +19,10 @@ module Api
       # Ensure date is handled consistently
       begin
         scheduled_date = if params[:practice_session][:scheduled_date].is_a?(String)
-          Date.parse(params[:practice_session][:scheduled_date])
+          # Parse the date and ensure it's the beginning of the day
+          Date.parse(params[:practice_session][:scheduled_date]).beginning_of_day
         else
-          params[:practice_session][:scheduled_date].to_date
+          params[:practice_session][:scheduled_date].to_date.beginning_of_day
         end
         Rails.logger.info "Parsed scheduled_date: #{scheduled_date}"
       rescue => e
@@ -73,7 +74,7 @@ module Api
     end
 
     def invalid_record(exception)
-      render json: { error: exception.record.errors.full_messages }, status: :unprocessable_entity
+      render json: { error: exception.record.errors.full_messages.join(', ') }, status: :unprocessable_entity
     end
   end
 end

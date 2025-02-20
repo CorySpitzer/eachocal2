@@ -26,8 +26,9 @@ class CalendarController < ApplicationController
               end
 
     @calendar_data = @skills.map.with_index do |skill, index|
+      # Fetch sessions for an extra day on each end to account for display adjustment
       practice_sessions = skill.practice_sessions
-                             .where(scheduled_date: @start_date..@end_date)
+                             .where(scheduled_date: (@start_date - 1.day)..(@end_date + 1.day))
                              .order(:scheduled_date)
 
       {
