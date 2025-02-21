@@ -49,10 +49,13 @@
                 <% @calendar_data.each do |skill| %>
                   <% 
                     Rails.logger.info "Calendar - Looking for sessions on date: #{date}"
-                    # Find session for this date without any adjustment
+                    # Add one day to match the homepage calendar
+                    target_date = (date + 1.day).to_date
+                    # Find session for this date
                     session = skill[:practice_sessions].find { |s| 
-                      Rails.logger.info "Calendar - Comparing session date: #{s.scheduled_date} with #{date}"
-                      s.scheduled_date.to_date.beginning_of_day == date.beginning_of_day 
+                      session_date = s.scheduled_date.to_date
+                      Rails.logger.info "Calendar - Comparing session date: #{session_date} with #{target_date}"
+                      session_date == target_date
                     }
                     Rails.logger.info "Calendar - Found session: #{session.inspect}" if session
                     rating = session&.rating

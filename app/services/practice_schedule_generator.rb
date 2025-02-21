@@ -36,14 +36,11 @@ class PracticeScheduleGenerator
     practice_dates.each do |date|
       Rails.logger.info "Creating schedule and session for date: #{date}"
       
-      # Create the practice schedule and session
-      # Note: We store dates in UTC midnight to match JavaScript's behavior
-      utc_date = date.to_datetime.beginning_of_day.utc
-      
-      schedule = skill.practice_schedules.find_or_create_by!(scheduled_date: utc_date)
+      # Store just the date without any time component
+      schedule = skill.practice_schedules.find_or_create_by!(scheduled_date: date.to_date)
       Rails.logger.info "Created schedule with date: #{schedule.scheduled_date}"
       
-      session = skill.practice_sessions.find_or_create_by!(scheduled_date: utc_date)
+      session = skill.practice_sessions.find_or_create_by!(scheduled_date: date.to_date)
       Rails.logger.info "Created session with date: #{session.scheduled_date}"
     end
   end
@@ -54,12 +51,10 @@ class PracticeScheduleGenerator
     # Match JavaScript's behavior exactly:
     # new Date(startDate).setDate(getDate() + days)
     intervals.each do |days|
-      # Convert to beginning of day to match JavaScript
-      base_date = start_date.to_datetime.beginning_of_day
-      # Add days to match JavaScript's setDate behavior
-      practice_date = base_date + days.days
+      # Add days to the start date
+      practice_date = start_date.to_date + days.days
       
-      Rails.logger.info "Adding #{days} days to #{base_date} = #{practice_date}"
+      Rails.logger.info "Adding #{days} days to #{start_date} = #{practice_date}"
       dates << practice_date
     end
     

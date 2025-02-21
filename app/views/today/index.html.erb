@@ -22,7 +22,8 @@
     <div class="list-group">
       <% @today_skills.each do |skill| %>
         <% 
-          practice_session = skill.practice_sessions.find_by(scheduled_date: @current_date)
+          # Add one day to match homepage calendar
+          practice_session = skill.practice_sessions.find_by(scheduled_date: @current_date + 1.day)
           rating = practice_session&.rating
           completed = rating.present?
           color = case rating

@@ -11,8 +11,10 @@ class CalendarController < ApplicationController
 
     @prev_month = @current_date.prev_month.beginning_of_month
     @next_month = @current_date.next_month.beginning_of_month
-    @start_date = @current_date.beginning_of_month
-    @end_date = @current_date.end_of_month
+    
+    # Use date-only for range queries
+    @start_date = @current_date.beginning_of_month.to_date
+    @end_date = @current_date.end_of_month.to_date
     
     # Set up subjects and skills
     @subjects = current_user.subjects.includes(:skills)
@@ -25,12 +27,19 @@ class CalendarController < ApplicationController
                 current_user.skills
               end
 
+    Rails.logger.info "Calendar - Fetching sessions between #{@start_date} and #{@end_date}"
+    
     @calendar_data = @skills.map.with_index do |skill, index|
       # Fetch practice sessions for the current month's view
       practice_sessions = skill.practice_sessions
                              .where(scheduled_date: @start_date..@end_date)
                              .order(:scheduled_date)
                              .includes(:skill)
+
+      Rails.logger.info "Calendar - Found #{practice_sessions.size} sessions for skill: #{skill.name}"
+      practice_sessions.each do |session|
+        Rails.logger.info "Calendar - Session date: #{session.scheduled_date}"
+      end
 
       {
         id: skill.id,
