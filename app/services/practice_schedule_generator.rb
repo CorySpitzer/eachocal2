@@ -16,48 +16,35 @@ class PracticeScheduleGenerator
     pattern_intervals = PATTERNS[skill.pattern]
     raise "Unknown pattern: #{skill.pattern}" unless pattern_intervals
 
-    generate_schedule_for_pattern(skill, pattern_intervals, days_ahead)
+    generate_schedule_for_pattern(skill, pattern_intervals)
   end
 
   private
 
-  def self.generate_schedule_for_pattern(skill, intervals, days_ahead)
-    # Get the date range we're working with
-    start_date = skill.start_date.beginning_of_day
-    end_date = Date.current.beginning_of_day + days_ahead.days
-
-    # Calculate practice dates based on the pattern intervals
-    practice_dates = calculate_pattern_dates(start_date, end_date, intervals)
-
+  def self.generate_schedule_for_pattern(skill, intervals)
+    # Generate dates exactly like the homepage does
+    practice_dates = generate_dates(skill.start_date, intervals)
+    
     # Create practice schedules and sessions for each date
     practice_dates.each do |date|
-      # Add 1 day to the stored date to account for display adjustment
-      stored_date = date + 1.day
-      
       # Create the practice schedule
-      schedule = skill.practice_schedules.find_or_create_by!(scheduled_date: stored_date)
+      schedule = skill.practice_schedules.find_or_create_by!(scheduled_date: date)
       
-      # Create the corresponding practice session if it doesn't exist
-      skill.practice_sessions.find_or_create_by!(scheduled_date: stored_date)
+      # Create the corresponding practice session
+      skill.practice_sessions.find_or_create_by!(scheduled_date: date)
     end
   end
 
-  def self.calculate_pattern_dates(start_date, end_date, intervals)
-    practice_dates = []
+  def self.generate_dates(start_date, intervals)
+    dates = []
     
-    # Always include the start date
-    practice_dates << start_date
-
-    # Add dates based on intervals
-    intervals.each do |interval|
-      practice_date = start_date + interval.days
-      
-      if practice_date <= end_date
-        Rails.logger.info "Adding practice date: #{practice_date}"
-        practice_dates << practice_date
-      end
+    # For each interval in the pattern, add that many days to the start date
+    intervals.each do |days|
+      practice_date = start_date + days.days
+      dates << practice_date
     end
-
-    practice_dates.uniq.sort
+    
+    # Return sorted unique dates
+    dates.uniq.sort
   end
 end

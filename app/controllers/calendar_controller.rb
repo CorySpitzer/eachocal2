@@ -26,25 +26,19 @@ class CalendarController < ApplicationController
               end
 
     @calendar_data = @skills.map.with_index do |skill, index|
-      # Fetch sessions for an extra day on each end to account for display adjustment
+      # Fetch practice sessions for the current month's view
       practice_sessions = skill.practice_sessions
-                             .where(scheduled_date: (@start_date - 1.day)..(@end_date + 1.day))
+                             .where(scheduled_date: @start_date..@end_date)
                              .order(:scheduled_date)
+                             .includes(:skill)
 
       {
         id: skill.id,
         name: skill.name,
+        pattern: skill.pattern,
+        start_date: skill.start_date,
         rating: skill.rating,
         color: generate_color(index),
-        # Sessions with ratings are completed
-        completed_sessions: practice_sessions
-                            .where.not(rating: nil)
-                            .pluck(:scheduled_date),
-        # Sessions without ratings are scheduled
-        scheduled_sessions: practice_sessions
-                            .where(rating: nil)
-                            .pluck(:scheduled_date),
-        # Include all practice sessions for this date range
         practice_sessions: practice_sessions
       }
     end
@@ -53,8 +47,7 @@ class CalendarController < ApplicationController
   private
 
   def generate_color(index)
-    # Generate unique, visually distinct colors using HSL
-    hue = (index * 137.508) % 360  # Golden angle approximation
-    "hsl(#{hue}, 70%, 60%)"
+    hue = (index * 137.508) % 360
+    "hsl(#{hue}, 70%, 45%)"
   end
 end
