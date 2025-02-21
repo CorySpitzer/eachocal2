@@ -101,12 +101,24 @@ async function addSkill() {
             })
         });
 
+        const data = await response.json();
+        
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.errors?.join(', ') || 'Failed to save skill');
+            console.error('Server response:', data);
+            let errorMessage = 'Failed to save skill';
+            
+            if (data.errors && Array.isArray(data.errors)) {
+                errorMessage = data.errors.join('\n');
+            } else if (data.error) {
+                errorMessage = data.error;
+                if (data.details) {
+                    console.error('Error details:', data.details);
+                }
+            }
+            
+            throw new Error(errorMessage);
         }
 
-        const data = await response.json();
         createSkillElement(data.skill, data.practice_sessions);
         
         // Clear inputs

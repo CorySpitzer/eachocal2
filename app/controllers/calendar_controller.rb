@@ -11,8 +11,8 @@ class CalendarController < ApplicationController
 
     @prev_month = @current_date.prev_month.beginning_of_month
     @next_month = @current_date.next_month.beginning_of_month
-    @start_date = @current_date.beginning_of_month.beginning_of_week(:sunday)
-    @end_date = @current_date.end_of_month.end_of_week(:sunday)
+    @start_date = @current_date.beginning_of_month
+    @end_date = @current_date.end_of_month
     
     # Set up subjects and skills
     @subjects = current_user.subjects.includes(:skills)

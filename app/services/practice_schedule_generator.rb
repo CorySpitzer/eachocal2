@@ -16,6 +16,11 @@ class PracticeScheduleGenerator
     pattern_intervals = PATTERNS[skill.pattern]
     raise "Unknown pattern: #{skill.pattern}" unless pattern_intervals
 
+    Rails.logger.info "Generating schedules for skill: #{skill.name}"
+    Rails.logger.info "Start date: #{skill.start_date}"
+    Rails.logger.info "Pattern: #{skill.pattern}"
+    Rails.logger.info "Intervals: #{pattern_intervals.inspect}"
+
     generate_schedule_for_pattern(skill, pattern_intervals)
   end
 
@@ -25,22 +30,36 @@ class PracticeScheduleGenerator
     # Generate dates exactly like the homepage does
     practice_dates = generate_dates(skill.start_date, intervals)
     
+    Rails.logger.info "Generated practice dates: #{practice_dates.inspect}"
+    
     # Create practice schedules and sessions for each date
     practice_dates.each do |date|
-      # Create the practice schedule
-      schedule = skill.practice_schedules.find_or_create_by!(scheduled_date: date)
+      Rails.logger.info "Creating schedule and session for date: #{date}"
       
-      # Create the corresponding practice session
-      skill.practice_sessions.find_or_create_by!(scheduled_date: date)
+      # Create the practice schedule and session
+      # Note: We store dates in UTC midnight to match JavaScript's behavior
+      utc_date = date.to_datetime.beginning_of_day.utc
+      
+      schedule = skill.practice_schedules.find_or_create_by!(scheduled_date: utc_date)
+      Rails.logger.info "Created schedule with date: #{schedule.scheduled_date}"
+      
+      session = skill.practice_sessions.find_or_create_by!(scheduled_date: utc_date)
+      Rails.logger.info "Created session with date: #{session.scheduled_date}"
     end
   end
 
   def self.generate_dates(start_date, intervals)
     dates = []
     
-    # For each interval in the pattern, add that many days to the start date
+    # Match JavaScript's behavior exactly:
+    # new Date(startDate).setDate(getDate() + days)
     intervals.each do |days|
-      practice_date = start_date + days.days
+      # Convert to beginning of day to match JavaScript
+      base_date = start_date.to_datetime.beginning_of_day
+      # Add days to match JavaScript's setDate behavior
+      practice_date = base_date + days.days
+      
+      Rails.logger.info "Adding #{days} days to #{base_date} = #{practice_date}"
       dates << practice_date
     end
     

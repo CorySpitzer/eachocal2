@@ -48,8 +48,13 @@
               <div class="skills-list">
                 <% @calendar_data.each do |skill| %>
                   <% 
-                    # Find session for this date without adjustment
-                    session = skill[:practice_sessions].find { |s| s.scheduled_date.to_date.beginning_of_day == date.beginning_of_day }
+                    Rails.logger.info "Calendar - Looking for sessions on date: #{date}"
+                    # Find session for this date without any adjustment
+                    session = skill[:practice_sessions].find { |s| 
+                      Rails.logger.info "Calendar - Comparing session date: #{s.scheduled_date} with #{date}"
+                      s.scheduled_date.to_date.beginning_of_day == date.beginning_of_day 
+                    }
+                    Rails.logger.info "Calendar - Found session: #{session.inspect}" if session
                     rating = session&.rating
                     completed = rating.present?
                     color = case rating
