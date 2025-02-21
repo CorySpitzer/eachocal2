@@ -65,6 +65,7 @@ async function addSkill() {
     const startDateInput = document.getElementById('startDate');
     const subjectSelect = document.getElementById('subject_id');
     const skillList = document.getElementById('skillList');
+    const patternSelect = document.getElementById('skillPattern');
 
     // Get skill name from either base skill dropdown or text input
     const skillName = newSkillInput.value || 
@@ -78,7 +79,7 @@ async function addSkill() {
 
     const skillData = {
         name: skillName,
-        pattern: 'ClassicLogN', // Default pattern
+        pattern: patternSelect.value || 'ClassicLogN', // Use selected pattern or default
         start_date: startDateInput.value
     };
 

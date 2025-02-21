@@ -57,6 +57,20 @@
               <input type="date" id="startDate" class="form-control">
             </div>
 
+            <div class="form-group mb-3">
+              <label for="skillPattern" class="form-label">Pattern</label>
+              <select id="skillPattern" class="form-select">
+                <option value="ClassicLogN">Classic Log N</option>
+                <option value="NLogN">N Log N</option>
+                <option value="Classic">Classic</option>
+                <option value="Aggressive">Aggressive</option>
+                <option value="Gentle">Gentle</option>
+                <option value="Double">Double</option>
+                <option value="Linear">Linear</option>
+                <option value="Fibonacci">Fibonacci</option>
+              </select>
+            </div>
+
             <button id="addSkillBtn" class="btn btn-primary w-100 mb-4">Add Skill</button>
           </div>
         </div>
@@ -76,6 +90,7 @@
       const baseSkillId = document.getElementById('base_skill_id').value;
       const newSkillName = document.getElementById('newSkillInput').value;
       const startDate = document.getElementById('startDate').value;
+      const skillPattern = document.getElementById('skillPattern').value;
 
       if (!subjectId) {
         alert('Please select a subject');
@@ -103,7 +118,8 @@
             subject_id: subjectId,
             base_skill_id: baseSkillId,
             name: newSkillName,
-            start_date: startDate
+            start_date: startDate,
+            pattern: skillPattern
           })
         });
 

@@ -40,7 +40,6 @@ Rails.application.routes.draw do
       end
     end
     post '/practice_sessions/:id/rate', to: 'practice_sessions#rate'
-    resources :skills, only: [:index, :create, :update, :destroy]
   end
 
   get '/calendar', to: 'calendar#index'
